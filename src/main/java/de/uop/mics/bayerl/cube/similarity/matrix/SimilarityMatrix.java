@@ -1,4 +1,4 @@
-package de.uop.mics.bayerl.cube.similarity;
+package de.uop.mics.bayerl.cube.similarity.matrix;
 
 /**
  * Created by sebastianbayerl on 29/07/15.
@@ -45,5 +45,21 @@ public class SimilarityMatrix {
 
         return sb.toString();
     }
+
+    public double getSimilarity() {
+        // TODO do this right
+        double sim = 0;
+
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                if (matrix[i][j] > 0) {
+                    sim += matrix[i][j];
+                }
+            }
+        }
+
+        return sim;
+    }
+
 
 }

@@ -13,7 +13,7 @@ import java.util.UUID;
  */
 public class CubeGenerator {
 
-    private final static int COUNT_DIMENSIONS = 50;
+    private final static int COUNT_DIMENSIONS = 10;
     private final static int COUNT_MEASURES = 2;
 
     public static List<Cube> createCubes(int nrOfCubes) {

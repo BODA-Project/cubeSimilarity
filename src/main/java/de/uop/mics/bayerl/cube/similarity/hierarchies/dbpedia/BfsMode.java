@@ -1,4 +1,4 @@
-package de.uop.mics.bayerl.cube.hierarchies.dbpedia;
+package de.uop.mics.bayerl.cube.similarity.hierarchies.dbpedia;
 
 /**
  * Created by sebastianbayerl on 27/07/15.

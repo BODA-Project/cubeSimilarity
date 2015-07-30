@@ -1,4 +1,4 @@
-package de.uop.mics.bayerl.cube.similarity.algorithm;
+package de.uop.mics.bayerl.cube.similarity.string;
 
 import org.apache.lucene.search.spell.JaroWinklerDistance;
 import org.apache.lucene.search.spell.LevensteinDistance;

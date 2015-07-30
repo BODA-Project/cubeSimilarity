@@ -1,4 +1,4 @@
-package de.uop.mics.bayerl.cube.hierarchies.dbpedia;
+package de.uop.mics.bayerl.cube.similarity.hierarchies.dbpedia;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -144,7 +144,9 @@ public class BfsSearch {
         return findPath(c1, c2, maxDistance, bfsMode).size() - 1;
     }
 
-    public static double getSimilarity(String c1, String c2, int maxDistance, BfsMode bfsMode) {
+    public static double getSimilarity(String c1, String c2) {
+        int maxDistance = Configuration.MAX_PATH_LENGTH;
+        BfsMode bfsMode = Configuration.BFS_MODE;
         int distance = getDistance(c1, c2, maxDistance, bfsMode);
 
         if (distance < 0) {

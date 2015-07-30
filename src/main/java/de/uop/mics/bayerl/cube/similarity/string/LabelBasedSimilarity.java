@@ -1,14 +1,12 @@
-package de.uop.mics.bayerl.cube.similarity.metadata;
+package de.uop.mics.bayerl.cube.similarity.string;
 
 import de.uop.mics.bayerl.cube.model.Cube;
-import de.uop.mics.bayerl.cube.similarity.SimilarityMeasure;
-import de.uop.mics.bayerl.cube.similarity.algorithm.ComputeStringDistance;
-import de.uop.mics.bayerl.cube.similarity.algorithm.DistanceAlgorithm;
+import de.uop.mics.bayerl.cube.similarity.ComputeSimilarity;
 
 /**
  * Created by sebastianbayerl on 23/07/15.
  */
-public class LabelBasedSimilarity implements SimilarityMeasure {
+public class LabelBasedSimilarity implements ComputeSimilarity {
 
     @Override
     public String getName() {

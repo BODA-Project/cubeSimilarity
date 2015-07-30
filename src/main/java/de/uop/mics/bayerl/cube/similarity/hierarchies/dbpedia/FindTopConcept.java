@@ -1,4 +1,4 @@
-package de.uop.mics.bayerl.cube.hierarchies.dbpedia;
+package de.uop.mics.bayerl.cube.similarity.hierarchies.dbpedia;
 
 import com.hp.hpl.jena.query.ParameterizedSparqlString;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -98,7 +98,8 @@ public class FindTopConcept {
         return null;
     }
 
-    public static double getSimilarity(String c1, String c2, int maxDistance) {
+    public static double getSimilarity(String c1, String c2) {
+        int maxDistance = Configuration.COMMON_CONCEPT_MAX_DISTANCE;
         QueryWrapper queryWrapper = findCommonTopConcept(c1, c2, maxDistance);
 
         if (queryWrapper == null) {

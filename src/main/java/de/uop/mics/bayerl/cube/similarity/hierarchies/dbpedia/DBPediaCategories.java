@@ -1,12 +1,8 @@
-package de.uop.mics.bayerl.cube.hierarchies.dbpedia;
+package de.uop.mics.bayerl.cube.similarity.hierarchies.dbpedia;
 
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.tdb.TDBFactory;
-import de.uop.mics.bayerl.cube.Configuration;
 import org.apache.log4j.Logger;
-
-import java.util.*;
 
 /**
  * Created by sebastianbayerl on 24/07/15.
