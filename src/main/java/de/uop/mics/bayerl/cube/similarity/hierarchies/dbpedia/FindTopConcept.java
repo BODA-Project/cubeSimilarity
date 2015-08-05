@@ -78,8 +78,8 @@ public class FindTopConcept {
     }
 
     private static QueryWrapper findDistance(String c1, String c2, List<QueryWrapper> queryWrappers) {
-        DBPediaCategories.DATASET.begin(ReadWrite.READ);
-        Model model = DBPediaCategories.DATASET.getDefaultModel();
+        DBPediaService.DATASET.begin(ReadWrite.READ);
+        Model model = DBPediaService.DATASET.getDefaultModel();
 
         for (QueryWrapper queryWrapper : queryWrappers) {
             LOG.debug(queryWrapper.getQuery());
@@ -94,7 +94,7 @@ public class FindTopConcept {
                 }
             }
         }
-        DBPediaCategories.DATASET.end();
+        DBPediaService.DATASET.end();
         return null;
     }
 

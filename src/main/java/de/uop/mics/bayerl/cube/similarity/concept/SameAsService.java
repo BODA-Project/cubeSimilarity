@@ -17,6 +17,7 @@ import java.util.Set;
  */
 public class SameAsService {
 
+    private static final String DBPEDIA_PREFIX = "http://dbpedia.org/";
     private static SameAsService sameAsService = null;
 
     private SameAsService() {}
@@ -43,6 +44,21 @@ public class SameAsService {
 
     public double getSimilarity(String c1, String c2) {
         return isSameAs(c1, c2) ? 1 : 0;
+    }
+
+    public String getDBPediaSameAs(String c) {
+        if (c.startsWith(DBPEDIA_PREFIX)) {
+            return c;
+        }
+
+        Set<String> cluster = getCluster(c);
+        for (String item : cluster) {
+            if (item.startsWith(DBPEDIA_PREFIX)) {
+                return item;
+            }
+        }
+
+        return null;
     }
 
     private Set<String> getCluster(String c) {

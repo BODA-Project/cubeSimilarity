@@ -1,12 +1,11 @@
-package de.uop.mics.bayerl.cube.similarity.structural;
+package de.uop.mics.bayerl.cube.similarity.concept;
 
-import de.uop.mics.bayerl.cube.similarity.concept.SameAsService;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 /**
- * Created by sebastianbayerl on 29/07/15.
+ * Created by sebastianbayerl on 04/08/15.
  */
 public class SameAsServiceTest {
 
@@ -19,5 +18,13 @@ public class SameAsServiceTest {
         assertEquals(1d, sameAsService.getSimilarity(c2, c1), 0d);
         assertEquals(1d, sameAsService.getSimilarity(c1, c1), 0d);
         assertEquals(0d, sameAsService.getSimilarity(c1, c1 + "x"), 0d);
+    }
+
+    @Test
+    public void testGetDBPediaSameAs() throws Exception {
+        SameAsService sameAsService = SameAsService.getInstance();
+        String c = "http://vocabulary.semantic-web.at/AustrianSkiTeam/121";
+        assertEquals("http://dbpedia.org/resource/Thomas_Morgenstern", sameAsService.getDBPediaSameAs(c));
+        assertNull(sameAsService.getDBPediaSameAs(c + "asdf"));
     }
 }

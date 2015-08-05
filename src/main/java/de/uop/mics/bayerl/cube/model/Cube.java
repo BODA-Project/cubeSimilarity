@@ -1,5 +1,7 @@
 package de.uop.mics.bayerl.cube.model;
 
+import de.uop.mics.bayerl.cube.provider.SparqlEndpoint;
+
 public class Cube {
 
     private String label;
@@ -8,6 +10,7 @@ public class Cube {
     private String id;
     private String graph;
     private StructureDefinition structureDefinition = new StructureDefinition();
+    private SparqlEndpoint sparqlEndpoint;
 
     public String getLabel() {
         return label;
@@ -55,5 +58,13 @@ public class Cube {
 
     public void setStructureDefinition(StructureDefinition structureDefinition) {
         this.structureDefinition = structureDefinition;
+    }
+
+    public SparqlEndpoint getSparqlEndpoint() {
+        return sparqlEndpoint;
+    }
+
+    public void setSparqlEndpoint(SparqlEndpoint sparqlEndpoint) {
+        this.sparqlEndpoint = sparqlEndpoint;
     }
 }

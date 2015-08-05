@@ -58,6 +58,8 @@ public class SimilarityMatrix {
             }
         }
 
+
+
         return sim;
     }
 

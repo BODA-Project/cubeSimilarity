@@ -3,6 +3,7 @@ package de.uop.mics.bayerl.cube.similarity.hierarchies.dbpedia;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
 import de.uop.mics.bayerl.cube.Configuration;
+import de.uop.mics.bayerl.cube.similarity.concept.SameAsService;
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -20,8 +21,8 @@ public class BfsSearch {
         prepareQuery.setIri("s", concept);
         LOG.debug(prepareQuery.toString());
 
-        DBPediaCategories.DATASET.begin(ReadWrite.READ);
-        Model model = DBPediaCategories.DATASET.getDefaultModel();
+        DBPediaService.DATASET.begin(ReadWrite.READ);
+        Model model = DBPediaService.DATASET.getDefaultModel();
         List<String> broaders = new ArrayList<>();
 
         try (QueryExecution queryExecution = QueryExecutionFactory.create(prepareQuery.toString(), model)) {
@@ -33,7 +34,7 @@ public class BfsSearch {
             }
         }
 
-        DBPediaCategories.DATASET.end();
+        DBPediaService.DATASET.end();
         return broaders;
     }
 
@@ -43,8 +44,8 @@ public class BfsSearch {
         prepareQuery.setIri("o", concept);
         LOG.debug(prepareQuery.toString());
 
-        DBPediaCategories.DATASET.begin(ReadWrite.READ);
-        Model model = DBPediaCategories.DATASET.getDefaultModel();
+        DBPediaService.DATASET.begin(ReadWrite.READ);
+        Model model = DBPediaService.DATASET.getDefaultModel();
         List<String> narrowers = new ArrayList<>();
 
         try (QueryExecution queryExecution = QueryExecutionFactory.create(prepareQuery.toString(), model)) {
@@ -56,62 +57,92 @@ public class BfsSearch {
             }
         }
 
-        DBPediaCategories.DATASET.end();
+        DBPediaService.DATASET.end();
         return narrowers;
     }
 
     public static List<String> findPath(String c1, String c2, int maxDistance, BfsMode bfsMode) {
 
+        // Get DBPedia concept using the SameAs service
+        String dbpC1 = SameAsService.getInstance().getDBPediaSameAs(c1);
+        String dbpC2 = SameAsService.getInstance().getDBPediaSameAs(c2);
+
+        if (dbpC1 == null || dbpC2 == null) {
+            LOG.info("No suitable DBPedia concept found");
+            return new LinkedList<>();
+        }
+
+        // Get the categories for the DBPedia concepts
+        Set<String> catC1 = DBPediaService.getCategories(dbpC1);
+        Set<String> catC2 = DBPediaService.getCategories(dbpC2);
+
+        if (catC1.isEmpty() || catC2.isEmpty()) {
+            LOG.info("No DBPedia categories found");
+            return new LinkedList<>();
+        }
+
+        // TODO is this check necessary?
         if (c1.equals(c2)) {
             List<String> path = new LinkedList<>();
             path.add(c1);
             return path;
         }
 
+        // check if common category is already found
+        for (String s : catC1) {
+            if (catC2.contains(s)) {
+                List<String> path = new LinkedList<>();
+                path.add(c1);
+                path.add(s);
+                path.add(c2);
+                return path;
+            }
+        }
+
         // do BFS search to find edges
-        Queue<String> q = new LinkedList<>();
+        Queue<String> bfsQueue = new LinkedList<>();
+
+        // stores all already reached nodes and from which node they were reached
         Map<String, String> reachedFrom = new HashMap<>();
+
+        // stores the level of the node (distance to source node)
         Map<String, Integer> levels = new HashMap<>();
         levels.put(c1, 0);
-        Set<String> allNodes = new HashSet<>();
-        allNodes.add(c1);
+
+        for (String s : catC1) {
+            levels.put(s, 1);
+            bfsQueue.add(s);
+            reachedFrom.put(s, c1);
+        }
 
         boolean work = true;
         boolean found = false;
-        String current = c1;
+
+        String current = bfsQueue.remove();
+
         while (work) {
             if (levels.get(current) == maxDistance) {
                 work = false;
             } else {
-                List<String> nodes = new ArrayList<>();
-
-                if (bfsMode == BfsMode.BROADER_AND_NARROWER) {
-                    nodes.addAll(getBroader(current));
-                    nodes.addAll(getNarrower(current));
-                } else if (bfsMode == BfsMode.BROADER_ONLY) {
-                    nodes.addAll(getBroader(current));
-                } else {
-                    nodes.addAll(getNarrower(current));
-                }
+                List<String> nodes = getNextNodes(bfsMode, current);
 
                 for (String node : nodes) {
-                    if (!allNodes.contains(node)) {
-                        q.add(node);
-                        allNodes.add(node);
+                    if (!reachedFrom.containsKey(node)) {
+                        bfsQueue.add(node);
+                        reachedFrom.put(node, current);
+                        levels.put(node, levels.get(current) + 1);
 
-                        if (node.equals(c2)) {
+                        if (catC2.contains(node)) {
+                            current = node;
                             work = false;
                             found = true;
                             break;
-                        } else {
-                            reachedFrom.put(node, current);
-                            levels.put(node, levels.get(current) + 1);
                         }
                     }
                 }
 
-                if (work && q.size() > 0) {
-                    current = q.remove();
+                if (work && bfsQueue.size() > 0) {
+                    current = bfsQueue.remove();
                 } else {
                     work = false;
                 }
@@ -132,12 +163,23 @@ public class BfsSearch {
             Collections.reverse(path);
         }
 
-//        for (String s : path) {
-//            System.out.println(s);
-//        }
+//        path.forEach(System.out::println);
 
         return path;
+    }
 
+    private static List<String> getNextNodes(BfsMode bfsMode, String current) {
+        List<String> nodes = new ArrayList<>();
+        if (bfsMode == BfsMode.BROADER_AND_NARROWER) {
+            nodes.addAll(getBroader(current));
+            nodes.addAll(getNarrower(current));
+        } else if (bfsMode == BfsMode.BROADER_ONLY) {
+            nodes.addAll(getBroader(current));
+        } else {
+            nodes.addAll(getNarrower(current));
+        }
+
+        return nodes;
     }
 
     public static int getDistance(String c1, String c2, int maxDistance, BfsMode bfsMode) {
