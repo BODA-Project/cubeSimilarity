@@ -56,7 +56,7 @@ public class ValidStructure {
 
             for (Component c : components) {
                 if (c.getLabel() == null || c.getLabel().isEmpty()
-                        || c.getUrl() == null || c.getUrl().isEmpty()) {
+                        || c.getConcept() == null || c.getConcept().isEmpty()) {
                     valid = false;
                     LOG.warn(cube.getId() + ": Component label/url not found");
                     break;
@@ -67,8 +67,8 @@ public class ValidStructure {
         // check if component urls are unique
         if (valid) {
             StructureDefinition sd = cube.getStructureDefinition();
-            Set<String> urls = sd.getDimensions().stream().map(Component::getUrl).collect(Collectors.toSet());
-            urls.addAll(sd.getMeasures().stream().map(Component::getUrl).collect(Collectors.toList()));
+            Set<String> urls = sd.getDimensions().stream().map(Component::getConcept).collect(Collectors.toSet());
+            urls.addAll(sd.getMeasures().stream().map(Component::getConcept).collect(Collectors.toList()));
 
             if (urls.size() != sd.getDimensions().size() + sd.getMeasures().size()) {
                 valid = false;

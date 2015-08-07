@@ -1,9 +1,11 @@
 package de.uop.mics.bayerl.cube.model;
 
-public class Component {
+import java.io.Serializable;
+
+public class Component implements Serializable {
 
     private String label;
-    private String url;
+    private String concept;
     private String subpropertyOf;
 
     public String getLabel() {
@@ -14,12 +16,12 @@ public class Component {
         this.label = label;
     }
 
-    public String getUrl() {
-        return url;
+    public String getConcept() {
+        return concept;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setConcept(String concept) {
+        this.concept = concept;
     }
 
     public String getSubpropertyOf() {

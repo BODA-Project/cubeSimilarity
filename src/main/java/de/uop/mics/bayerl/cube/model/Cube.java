@@ -2,7 +2,9 @@ package de.uop.mics.bayerl.cube.model;
 
 import de.uop.mics.bayerl.cube.provider.SparqlEndpoint;
 
-public class Cube {
+import java.io.Serializable;
+
+public class Cube implements Serializable {
 
     private String label;
     private String description;
@@ -11,6 +13,7 @@ public class Cube {
     private String graph;
     private StructureDefinition structureDefinition = new StructureDefinition();
     private SparqlEndpoint sparqlEndpoint;
+    private String concept;
 
     public String getLabel() {
         return label;
@@ -66,5 +69,13 @@ public class Cube {
 
     public void setSparqlEndpoint(SparqlEndpoint sparqlEndpoint) {
         this.sparqlEndpoint = sparqlEndpoint;
+    }
+
+    public String getConcept() {
+        return concept;
+    }
+
+    public void setConcept(String concept) {
+        this.concept = concept;
     }
 }

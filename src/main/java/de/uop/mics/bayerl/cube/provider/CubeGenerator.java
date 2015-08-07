@@ -48,7 +48,7 @@ public class CubeGenerator {
         Dimension dimension = new Dimension();
         String id = UUID.randomUUID().toString();
         dimension.setLabel(id);
-        dimension.setUrl(id);
+        dimension.setConcept(id);
 
         return dimension;
     }
@@ -57,7 +57,7 @@ public class CubeGenerator {
         Measure measure = new Measure();
         String id = UUID.randomUUID().toString();
         measure.setLabel(id);
-        measure.setUrl(id);
+        measure.setConcept(id);
 
         return measure;
     }

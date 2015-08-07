@@ -1,18 +1,25 @@
 package de.uop.mics.bayerl.cube.provider;
 
-import com.google.common.collect.Lists;
-import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.ParameterizedSparqlString;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import de.uop.mics.bayerl.cube.model.Cube;
+import de.uop.mics.bayerl.cube.model.Dimension;
+import de.uop.mics.bayerl.cube.model.Measure;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -25,84 +32,99 @@ public class Datahub {
     private static final String GET_DATASET = "package_show?id=";
     private static final String FILE_ENDPOINTS = "endpoints";
     private static final String FILE_ENDPOITNS_FILTERED = "endpointsFiltered";
+    private static final String CUBE_FILE = "cubes";
 
-    private final static String ASK_DSD = "ASK { ?s ?p <http://purl.org/linked-data/cube#DataStructureDefinition> }";
-    private final static String HAS_DSD = "SELECT ?s WHERE { ?s a <http://purl.org/linked-data/cube#DataStructureDefinition> }";
-    private final static String SELECT_DSD = "SELECT ?d ?l1 ?dsd ?dm ?t ?l2 \n" +
-            "\n" +
-            "WHERE {\n" +
-            "\n" +
-            "?d <http://www.w3.org/2000/01/rdf-schema#label> ?l1 . \n" +
-            "?d <http://purl.org/linked-data/cube#structure> ?dsd . \n" +
-            "?dsd a <http://purl.org/linked-data/cube#DataStructureDefinition> . \n" +
-            "?o <http://purl.org/linked-data/cube#component> ?bn . \n" +
-            "?bn ?c ?dm . \n" +
-            "?dm a ?t . \n" +
-            "?dm <http://www.w3.org/2000/01/rdf-schema#label> ?l2 \n" +
-            "MINUS {\n" +
-            "      ?dm a <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .\n" +
-            "   }\n" +
-            "}";
+
+    private final static String GET_DSD = " SELECT * WHERE { ?dsd a <http://purl.org/linked-data/cube#DataStructureDefinition> }";
+
+    private final static String GET_DIMS = " SELECT * WHERE { " +
+            " ?dsd a <http://purl.org/linked-data/cube#DataStructureDefinition> ." +
+            " ?dsd <http://purl.org/linked-data/cube#component> ?bn ." +
+            " ?bn <http://purl.org/linked-data/cube#dimension> ?c ." +
+            " }";
+
+    private final static String GET_MEAS = " SELECT * WHERE { " +
+            " ?dsd a <http://purl.org/linked-data/cube#DataStructureDefinition> ." +
+            " ?dsd <http://purl.org/linked-data/cube#component> ?bn ." +
+            " ?bn <http://purl.org/linked-data/cube#measure> ?c ." +
+            " }";
 
 
     public static void main(String[] args) {
 
-        List<SparqlEndpoint> endpoints = read(FILE_ENDPOITNS_FILTERED);
-        Set<String> set = new HashSet<>();
-        for (SparqlEndpoint endpoint : endpoints) {
-            set.add(endpoint.getEndpoint());
-        }
-
-        int count270a = 0;
-        for (String s : set) {
-            if (s.contains("270a.info/sparql")) {
-                count270a++;
-            }
-        }
-
-
-
-        System.out.println(endpoints.size());
-        System.out.println(set.size());
-        System.out.println(set.size() - count270a + 1);
-
-        List<String> finalList = Lists.newLinkedList(set);
-        Collections.sort(finalList);
-
-        for (String s : finalList) {
-            System.out.println(s);
-        }
+        getAllCubes();
 
     }
 
+    public static void getAllCubes() {
+        List<SparqlEndpoint> endpoints = read(FILE_ENDPOITNS_FILTERED);
+        List<Cube> cubes = new ArrayList<>();
+        Set<String> done = new HashSet<>();
+        int i = 0;
+        for (SparqlEndpoint endpoint : endpoints) {
+            i++;
+            System.out.println();
+            if (!done.contains(endpoint.getEndpoint())) {
+                System.out.println("" + i + "/" + endpoints.size() + " Get cubes from: " + endpoint.getEndpoint());
+                done.add(endpoint.getEndpoint());
+                List<Cube> temp = getCubes(endpoint);
+                cubes.addAll(temp);
+                System.out.println("New cubes: " + temp.size());
+                System.out.println("Total cubes: " + cubes.size());
+            } else {
+                System.out.println("Already done: " + endpoint.getEndpoint());
+            }
+        }
 
-    public static List<Cube> getDSDs(SparqlEndpoint endpoint) {
-        ParameterizedSparqlString prepareQuery = new ParameterizedSparqlString(SELECT_DSD);
+        writeCbues(cubes);
+    }
+
+
+    public static List<Cube> getCubes(SparqlEndpoint endpoint) {
+        ParameterizedSparqlString prepareQuery = new ParameterizedSparqlString(GET_DSD);
         QueryEngineHTTP qeHTTP = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(endpoint.getEndpoint(), prepareQuery.toString());
         ResultSet results = qeHTTP.execSelect();
 
+        // get dataset and dsd concepts
         List<Cube> cubes = new ArrayList<>();
         while (results.hasNext()) {
             QuerySolution r = results.next();
-
-            String dataset = r.getResource("d").getURI();
-            String label = r.getLiteral("l1").getLexicalForm();
-            String component = r.getResource("dm").getURI();
-            String compType = r.getResource("t").getURI();
-            String compLabel = r.getLiteral("l2").getLexicalForm();
-
-            // TODO validation check?
-
-            // TODO filter
-            if (compType.equals("http://purl.org/linked-data/cube#DimensionProperty") || compType.equals("http://purl.org/linked-data/cube#MeasureProperty")) {
-
-
+            if (r.getResource("dsd") != null) {
                 Cube cube = new Cube();
+                cubes.add(cube);
                 cube.setSparqlEndpoint(endpoint);
-
+                cube.getStructureDefinition().setConcept(r.getResource("dsd").getURI());
             }
+        }
 
+        // get dimensions
+        for (Cube cube : cubes) {
+            prepareQuery = new ParameterizedSparqlString(GET_DIMS);
+            prepareQuery.setIri("dsd", cube.getStructureDefinition().getConcept());
+            qeHTTP = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(endpoint.getEndpoint(), prepareQuery.toString());
+            results = qeHTTP.execSelect();
 
+            while (results.hasNext()) {
+                QuerySolution r = results.next();
+                Dimension d = new Dimension();
+                d.setConcept(r.getResource("c").getURI());
+                cube.getStructureDefinition().getDimensions().add(d);
+            }
+        }
+
+        // get measures
+        for (Cube cube : cubes) {
+            prepareQuery = new ParameterizedSparqlString(GET_MEAS);
+            prepareQuery.setIri("dsd", cube.getStructureDefinition().getConcept());
+            qeHTTP = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(endpoint.getEndpoint(), prepareQuery.toString());
+            results = qeHTTP.execSelect();
+
+            while (results.hasNext()) {
+                QuerySolution r = results.next();
+                Measure m = new Measure();
+                m.setConcept(r.getResource("c").getURI());
+                cube.getStructureDefinition().getMeasures().add(m);
+            }
         }
 
         return cubes;
@@ -121,7 +143,7 @@ public class Datahub {
     }
 
     private static boolean hasDSD(SparqlEndpoint endpoint) {
-        ParameterizedSparqlString prepareQuery = new ParameterizedSparqlString(HAS_DSD);
+        ParameterizedSparqlString prepareQuery = new ParameterizedSparqlString(GET_DSD);
         QueryEngineHTTP qeHTTP = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(endpoint.getEndpoint(), prepareQuery.toString());
         boolean result = false;
 
@@ -230,6 +252,31 @@ public class Datahub {
         }
 
         return null;
+    }
+
+    private static void writeCbues(List<Cube> cubes) {
+        try {
+            FileOutputStream fout = new FileOutputStream(CUBE_FILE);
+            ObjectOutputStream oos = new ObjectOutputStream(fout);
+            oos.writeObject(cubes);
+            oos.close();
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static List<Cube> readCubes() {
+        List<Cube> cubes = new ArrayList<>();
+        try {
+            FileInputStream streamIn = new FileInputStream(CUBE_FILE);
+            ObjectInputStream objectinputstream = new ObjectInputStream(streamIn);
+            cubes = (List<Cube>) objectinputstream.readObject();
+            objectinputstream.close();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return cubes;
     }
 
     private static void write(List<SparqlEndpoint> endpoints, String file) {

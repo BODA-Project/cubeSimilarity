@@ -16,8 +16,8 @@ public class CommonTopConceptSimilarity extends ComputeComponentSimilarity {
 
     @Override
     double getSimilarity(Component co1, Component co2) {
-        String c1 = co1.getUrl();
-        String c2 = co2.getUrl();
+        String c1 = co1.getConcept();
+        String c2 = co2.getConcept();
 
         return FindTopConcept.getSimilarity(c1, c2);
     }

@@ -1,13 +1,15 @@
 package de.uop.mics.bayerl.cube.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class StructureDefinition {
+public class StructureDefinition implements Serializable {
 
     private List<Dimension> dimensions = new LinkedList<>();
     private List<Measure> measures = new LinkedList<>();
+    private String concept;
 
 
     public List<Dimension> getDimensions() {
@@ -31,5 +33,13 @@ public class StructureDefinition {
         components.addAll(dimensions);
         components.addAll(measures);
         return components;
+    }
+
+    public String getConcept() {
+        return concept;
+    }
+
+    public void setConcept(String concept) {
+        this.concept = concept;
     }
 }
