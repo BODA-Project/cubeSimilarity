@@ -2,7 +2,8 @@ package de.uop.mics.bayerl.cube.similarity.concept;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * Created by sebastianbayerl on 04/08/15.

@@ -2,9 +2,8 @@ package de.uop.mics.bayerl.cube.similarity.hierarchies.dbpedia;
 
 import org.junit.Test;
 
-import java.util.Set;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by sebastianbayerl on 04/08/15.

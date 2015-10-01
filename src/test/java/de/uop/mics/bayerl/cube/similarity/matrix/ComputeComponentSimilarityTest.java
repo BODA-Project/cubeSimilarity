@@ -4,7 +4,6 @@ import de.uop.mics.bayerl.cube.model.Cube;
 import de.uop.mics.bayerl.cube.provider.CubeGenerator;
 import de.uop.mics.bayerl.cube.validation.ValidStructure;
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 import java.util.List;
 
@@ -21,41 +20,41 @@ public class ComputeComponentSimilarityTest {
         cubes.forEach(ValidStructure::validate);
     }
 
-    @Test
-    public void testEqualComponents() throws Exception {
-        ComputeComponentSimilarity similarity = new EqualConcepts();
-        System.out.println(similarity.computeMatrix(cubes.get(0), cubes.get(1)).getSimilarity());
-    }
-
-    @Test
-    public void testEqualLabels() throws Exception {
-        ComputeComponentSimilarity similarity = new EqualLabels();
-        System.out.println(similarity.computeMatrix(cubes.get(0), cubes.get(1)).getSimilarity());
-    }
-
-    @Test
-    public void testLabelSimilarity() throws Exception {
-        ComputeComponentSimilarity similarity = new LabelSimilarity();
-        System.out.println(similarity.computeMatrix(cubes.get(0), cubes.get(1)).getSimilarity());
-    }
-
-    @Test
-    public void testSameAsExtended() throws Exception {
-        ComputeComponentSimilarity similarity = new SameAsExtended();
-        System.out.println(similarity.computeMatrix(cubes.get(0), cubes.get(1)).getSimilarity());
-    }
-
-    @Test
-    public void testCommonTopConcept() throws Exception {
-        ComputeComponentSimilarity similarity = new CommonTopConceptSimilarity();
-        System.out.println(similarity.computeMatrix(cubes.get(0), cubes.get(1)).getSimilarity());
-    }
-
-    @Test
-    public void testBfsSimilarity() throws Exception {
-        ComputeComponentSimilarity similarity = new BfsSimilarity();
-        System.out.println(similarity.computeMatrix(cubes.get(0), cubes.get(1)).getSimilarity());
-    }
+//    @Test
+//    public void testEqualComponents() throws Exception {
+//        ComputeComponentSimilarity similarity = new EqualConcepts();
+//        System.out.println(similarity.computeMatrix(cubes.get(0), cubes.get(1)).getSimilarity());
+//    }
+//
+//    @Test
+//    public void testEqualLabels() throws Exception {
+//        ComputeComponentSimilarity similarity = new EqualLabels();
+//        System.out.println(similarity.computeMatrix(cubes.get(0), cubes.get(1)).getSimilarity());
+//    }
+//
+//    @Test
+//    public void testLabelSimilarity() throws Exception {
+//        ComputeComponentSimilarity similarity = new LabelSimilarity();
+//        System.out.println(similarity.computeMatrix(cubes.get(0), cubes.get(1)).getSimilarity());
+//    }
+//
+//    @Test
+//    public void testSameAsExtended() throws Exception {
+//        ComputeComponentSimilarity similarity = new SameAsExtended();
+//        System.out.println(similarity.computeMatrix(cubes.get(0), cubes.get(1)).getSimilarity());
+//    }
+//
+//    @Test
+//    public void testCommonTopConcept() throws Exception {
+//        ComputeComponentSimilarity similarity = new CommonTopConceptSimilarity();
+//        System.out.println(similarity.computeMatrix(cubes.get(0), cubes.get(1)).getSimilarity());
+//    }
+//
+//    @Test
+//    public void testBfsSimilarity() throws Exception {
+//        ComputeComponentSimilarity similarity = new BfsSimilarity();
+//        System.out.println(similarity.computeMatrix(cubes.get(0), cubes.get(1)).getSimilarity());
+//    }
 
 
 }

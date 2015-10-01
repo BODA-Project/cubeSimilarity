@@ -21,7 +21,7 @@ public abstract class ComputeComponentSimilarity {
 
         for (int i = 0; i < comp1.size(); i++) {
             for (int j = 0; j < comp2.size(); j++) {
-                similarityMatrix.setValue(i, j, getSimilarity(comp1.get(i), comp2.get(j)));
+                similarityMatrix.getMatrix()[i][j] = getSimilarity(comp1.get(i), comp2.get(j));
             }
         }
 

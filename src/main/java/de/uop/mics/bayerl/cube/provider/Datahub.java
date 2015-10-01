@@ -1,31 +1,41 @@
 package de.uop.mics.bayerl.cube.provider;
 
-import com.hp.hpl.jena.query.ParameterizedSparqlString;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
+import com.google.common.base.CaseFormat;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import de.uop.mics.bayerl.cube.model.Component;
 import de.uop.mics.bayerl.cube.model.Cube;
 import de.uop.mics.bayerl.cube.model.Dimension;
 import de.uop.mics.bayerl.cube.model.Measure;
+import de.uop.mics.bayerl.cube.provider.parallel.Request;
+import org.apache.jena.query.ParameterizedSparqlString;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.*;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 /**
  * Created by sebastianbayerl on 05/08/15.
  */
 public class Datahub {
+
+    // TODO get label and concept for cube?
+    //SELECT * WHERE { <http://abs.270a.info/dataset/ABS_CENSUS2011_T32> <http://purl.org/dc/terms/title> ?b  . FILTER ( lang(?b) = "en" ) }
 
     private static final String DATAHUB_API = "http://datahub.io/api/3/action/";
     private static final String GET_PACKAGES = "package_list";
@@ -49,14 +59,34 @@ public class Datahub {
             " ?bn <http://purl.org/linked-data/cube#measure> ?c ." +
             " }";
 
+    private final static String GET_LABEL = "select ?l where { ?s <http://www.w3.org/2000/01/rdf-schema#label> ?l }";
+
 
     public static void main(String[] args) {
 
-        getAllCubes();
+        //List<String> datasets = getDatasets();
+        //getEndpointsParallel(datasets);
+
+//        System.out.println("##### Get endpoints");
+//        persistEndpoints();
+//        System.out.println("##### Filter Endpoints");
+//        persistFilteredEndpoints();
+
+
+//        System.out.println("##### Get cubes");
+//        getAllCubes();
+//        System.out.println("##### Get labels");
+//        addLabels();
+
+
+//        SparqlEndpoint se = new SparqlEndpoint();
+//        se.setEndpoint("http://lod.openlinksw.com/sparql");
+//
+//        getCubes(se);
 
     }
 
-    public static void getAllCubes() {
+    private static void getAllCubes() {
         List<SparqlEndpoint> endpoints = read(FILE_ENDPOITNS_FILTERED);
         List<Cube> cubes = new ArrayList<>();
         Set<String> done = new HashSet<>();
@@ -76,11 +106,39 @@ public class Datahub {
             }
         }
 
-        writeCbues(cubes);
+        writeCubes(cubes, false);
+    }
+
+    private static void addLabels() {
+        List<Cube> cubes = readCubes(false);
+        Set<String> skip = new HashSet<>();
+        for (Cube cube : cubes) {
+            if (!skip.contains(cube.getSparqlEndpoint().getEndpoint())) {
+                for (Component component : cube.getStructureDefinition().getComponents()) {
+                    ParameterizedSparqlString prepareQuery = new ParameterizedSparqlString(GET_LABEL);
+                    prepareQuery.setIri("s", component.getConcept());
+                    QueryEngineHTTP qeHTTP = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(cube.getSparqlEndpoint().getEndpoint(), prepareQuery.toString());
+
+                    ResultSet results = qeHTTP.execSelect();
+
+                    if (results.hasNext()) {
+                        QuerySolution r = results.next();
+                        component.setLabel(r.getLiteral("l").getLexicalForm());
+                        System.out.println(component.getConcept());
+                        System.out.println(component.getLabel());
+                    } else {
+                        System.out.println("skip " + cube.getSparqlEndpoint().getEndpoint());
+                        skip.add(cube.getSparqlEndpoint().getEndpoint());
+                    }
+                }
+            }
+        }
+
+        writeCubes(cubes, true);
     }
 
 
-    public static List<Cube> getCubes(SparqlEndpoint endpoint) {
+    private static List<Cube> getCubes(SparqlEndpoint endpoint) {
         ParameterizedSparqlString prepareQuery = new ParameterizedSparqlString(GET_DSD);
         QueryEngineHTTP qeHTTP = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(endpoint.getEndpoint(), prepareQuery.toString());
         ResultSet results = qeHTTP.execSelect();
@@ -89,7 +147,8 @@ public class Datahub {
         List<Cube> cubes = new ArrayList<>();
         while (results.hasNext()) {
             QuerySolution r = results.next();
-            if (r.getResource("dsd") != null) {
+
+            if (r.get("dsd") != null && r.get("dsd").isResource()) {
                 Cube cube = new Cube();
                 cubes.add(cube);
                 cube.setSparqlEndpoint(endpoint);
@@ -107,6 +166,9 @@ public class Datahub {
             while (results.hasNext()) {
                 QuerySolution r = results.next();
                 Dimension d = new Dimension();
+//                System.out.println(r.get("c"));
+
+//                System.out.println(r.get("c").isResource() + "  " + r.get("c").isLiteral());
                 d.setConcept(r.getResource("c").getURI());
                 cube.getStructureDefinition().getDimensions().add(d);
             }
@@ -122,6 +184,7 @@ public class Datahub {
             while (results.hasNext()) {
                 QuerySolution r = results.next();
                 Measure m = new Measure();
+//                System.out.println(r.get("c").isResource() + "  " + r.get("c").isLiteral());
                 m.setConcept(r.getResource("c").getURI());
                 cube.getStructureDefinition().getMeasures().add(m);
             }
@@ -131,7 +194,7 @@ public class Datahub {
     }
 
 
-    public static void persistFilteredEndpoints() {
+    private static void persistFilteredEndpoints() {
         List<SparqlEndpoint> endpoints = read(FILE_ENDPOINTS);
         List<SparqlEndpoint> filtered = filterDSD(endpoints);
 
@@ -164,7 +227,7 @@ public class Datahub {
         return result;
     }
 
-    public static void persistEndpoints() {
+    private static void persistEndpoints() {
         List<String> datasets = getDatasets();
 
 //        getEndpoint("2000-us-census-rdf");
@@ -175,7 +238,8 @@ public class Datahub {
         List<SparqlEndpoint> endpoints = new ArrayList<>();
         for (String dataset : datasets) {
             System.out.println("Endpoints: " + endpoints.size() +  "   " + i + "/" + datasets.size() + "      Current dataset: " + dataset);
-            SparqlEndpoint sparqlEndpoint = getEndpoint(dataset);
+            Request r = new Request(dataset);
+            SparqlEndpoint sparqlEndpoint = r.getEndpoint();
 
             if (sparqlEndpoint != null) {
                 endpoints.add(sparqlEndpoint);
@@ -183,15 +247,15 @@ public class Datahub {
 
             i++;
 
-//            if (i > 100) {
-//                break;
-//            }
+            if (i > 100) {
+                break;
+            }
         }
 
         System.out.println("datasets:  " + datasets.size());
         System.out.println("endpoints: " + endpoints.size());
 
-        write(endpoints, FILE_ENDPOINTS);
+        //write(endpoints, FILE_ENDPOINTS);
     }
 
     private static List<String> getDatasets() {
@@ -211,52 +275,44 @@ public class Datahub {
         return datasets;
     }
 
-    private static SparqlEndpoint getEndpoint(String dataset) {
+    private static List<SparqlEndpoint> getEndpointsParallel(List<String> datasets) {
+        ExecutorService executor = Executors.newFixedThreadPool(50);
 
-        HttpResponse<JsonNode> json = null;
-        try {
-            json = Unirest.get(DATAHUB_API + GET_DATASET + dataset).asJson();
-        } catch (UnirestException e) {
-            e.printStackTrace();
+        datasets = datasets.subList(0, 100);
+
+        List<Future<SparqlEndpoint>> futures = new ArrayList<>();
+        for (String dataset : datasets) {
+            Future<SparqlEndpoint> future = executor.submit(new Request(dataset));
+            futures.add(future);
         }
 
+        List<SparqlEndpoint> endpoints = new ArrayList<>();
 
-        JSONObject result = json.getBody().getObject().getJSONObject("result");
-        JSONArray resources = result.getJSONArray("resources");
+        for (Future<SparqlEndpoint> future : futures) {
+            try {
+                SparqlEndpoint sparqlEndpoint = future.get();
 
-        for (int i = 0; i < resources.length(); i++) {
-            JSONObject resource = resources.getJSONObject(i);
-            if (resource.getString("format").equals("api/sparql")) {
-                SparqlEndpoint sparqlEndpoint = new SparqlEndpoint();
-                sparqlEndpoint.setId(dataset);
-
-                if (!result.isNull("url")) {
-                    sparqlEndpoint.setUrl(result.getString("url"));
+                if (sparqlEndpoint != null) {
+                    endpoints.add(sparqlEndpoint);
                 }
-
-                if (!resource.isNull("name")) {
-                    sparqlEndpoint.setName(resource.getString("name"));
-
-                }
-
-                if (!resource.isNull("url")) {
-                    sparqlEndpoint.setEndpoint(resource.getString("url"));
-                }
-
-                if (!result.isNull("title")) {
-                    sparqlEndpoint.setTitle(result.getString("title"));
-                }
-
-                return sparqlEndpoint;
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
             }
         }
 
-        return null;
+        System.out.println("endpoints: " + endpoints.size());
+
+        return endpoints;
     }
 
-    private static void writeCbues(List<Cube> cubes) {
+
+    private static void writeCubes(List<Cube> cubes, boolean withLabels) {
         try {
-            FileOutputStream fout = new FileOutputStream(CUBE_FILE);
+            String file = CUBE_FILE;
+            if (withLabels) {
+                file += "_l";
+            }
+            FileOutputStream fout = new FileOutputStream(file);
             ObjectOutputStream oos = new ObjectOutputStream(fout);
             oos.writeObject(cubes);
             oos.close();
@@ -265,10 +321,14 @@ public class Datahub {
         }
     }
 
-    private static List<Cube> readCubes() {
+    public static List<Cube> readCubes(boolean withLabels) {
         List<Cube> cubes = new ArrayList<>();
         try {
-            FileInputStream streamIn = new FileInputStream(CUBE_FILE);
+            String file = CUBE_FILE;
+            if (withLabels) {
+                file += "_l";
+            }
+            FileInputStream streamIn = new FileInputStream(file);
             ObjectInputStream objectinputstream = new ObjectInputStream(streamIn);
             cubes = (List<Cube>) objectinputstream.readObject();
             objectinputstream.close();
@@ -302,6 +362,33 @@ public class Datahub {
         }
 
         return endpoints;
+    }
+
+    private static String getLabelFromUrl(String concept) {
+
+        // get substring
+        int index = concept.lastIndexOf("#");
+
+        if (index == -1) {
+            index = concept.lastIndexOf("/");
+        }
+
+        String label = concept.substring(index + 1);
+
+        // remove unwanted characters
+//        label = label.replaceAll("-", " ");
+//        label = label.replaceAll("_", " ");
+
+        try {
+            label = URLDecoder.decode(label, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        label = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_HYPHEN, label);
+        label = label.replaceAll("-", " ");
+
+        return label;
     }
 
 }

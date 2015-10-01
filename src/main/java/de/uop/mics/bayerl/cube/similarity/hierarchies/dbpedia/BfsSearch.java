@@ -1,9 +1,9 @@
 package de.uop.mics.bayerl.cube.similarity.hierarchies.dbpedia;
 
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.rdf.model.Model;
 import de.uop.mics.bayerl.cube.Configuration;
 import de.uop.mics.bayerl.cube.similarity.concept.SameAsService;
+import org.apache.jena.query.*;
+import org.apache.jena.rdf.model.Model;
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -13,92 +13,126 @@ import java.util.*;
  */
 public class BfsSearch {
 
+
+    private final static String PAGE_LINK_PROPERTY = "<http://dbpedia.org/ontology/wikiPageWikiLink>";
+    private final static String SKOS_BROADER = "<http://www.w3.org/2004/02/skos/core#broader>";
+
     private final static Logger LOG = Logger.getLogger(BfsSearch.class);
 
-    private static List<String> getBroader(String concept) {
-        String queryString = " SELECT ?o WHERE { ?s <http://www.w3.org/2004/02/skos/core#broader> ?o }";
+
+    private static List<String> getNextNodes(String concept, EdgeMode edgeMode, String property) {
+        List<String> nodes = new ArrayList<>();
+
+        if (edgeMode == EdgeMode.BOTH) {
+            nodes.addAll(queryTDB(concept, property, true));
+            nodes.addAll(queryTDB(concept, property, false));
+        } else if (edgeMode == EdgeMode.INCOMING) {
+            nodes.addAll(queryTDB(concept, property, true));
+        } else {
+            nodes.addAll(queryTDB(concept, property, false));
+        }
+
+        return nodes;
+    }
+
+
+    private static List<String> queryTDB(String concept, String property, boolean incoming) {
+        List<String> concepts = new ArrayList<>();
+        String queryString = " SELECT ";
+
+        if (incoming) {
+            queryString += "?s ";
+        } else {
+            queryString += "?o ";
+        }
+
+        queryString += "WHERE { ?s " + property + " ?o }";
+
         ParameterizedSparqlString prepareQuery = new ParameterizedSparqlString(queryString);
-        prepareQuery.setIri("s", concept);
-        LOG.debug(prepareQuery.toString());
+
+        if (incoming) {
+            prepareQuery.setIri("o", concept);
+        } else {
+            prepareQuery.setIri("s", concept);
+        }
+
+        LOG.info("query: " + prepareQuery.toString());
 
         DBPediaService.DATASET.begin(ReadWrite.READ);
         Model model = DBPediaService.DATASET.getDefaultModel();
-        List<String> broaders = new ArrayList<>();
 
         try (QueryExecution queryExecution = QueryExecutionFactory.create(prepareQuery.toString(), model)) {
             ResultSet results = queryExecution.execSelect() ;
 
             while (results.hasNext()) {
                 QuerySolution solution = results.next();
-                broaders.add(solution.get("o").toString());
+
+                if (incoming) {
+                    concepts.add(solution.get("s").toString());
+                } else {
+                    concepts.add(solution.get("o").toString());
+                }
             }
         }
 
         DBPediaService.DATASET.end();
-        return broaders;
+
+        return concepts;
     }
 
-    private static List<String> getNarrower(String concept) {
-        String queryString = " SELECT ?s WHERE { ?s <http://www.w3.org/2004/02/skos/core#broader> ?o }";
-        ParameterizedSparqlString prepareQuery = new ParameterizedSparqlString(queryString);
-        prepareQuery.setIri("o", concept);
-        LOG.debug(prepareQuery.toString());
-
+    public static List<String> findDirectPath(String source, String target, int maxLength) {
+        List<String> path = new ArrayList<>();
         DBPediaService.DATASET.begin(ReadWrite.READ);
         Model model = DBPediaService.DATASET.getDefaultModel();
-        List<String> narrowers = new ArrayList<>();
+        boolean done = false;
 
-        try (QueryExecution queryExecution = QueryExecutionFactory.create(prepareQuery.toString(), model)) {
-            ResultSet results = queryExecution.execSelect() ;
-
-            while (results.hasNext()) {
-                QuerySolution solution = results.next();
-                narrowers.add(solution.get("s").toString());
+        for (int i = 0; i < maxLength; i++) {
+            if (done) {
+                break;
             }
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("select * where {");
+            sb.append(" <" + source + "> " + PAGE_LINK_PROPERTY);
+
+            for (int j = 0; j < i; j++) {
+                String current = "?c" + j;
+                sb.append(" " + current + " . " + current + " " + PAGE_LINK_PROPERTY);
+            }
+
+            sb.append(" <" + target + "> }");
+
+            String query = sb.toString();
+
+            try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
+                ResultSet results = queryExecution.execSelect() ;
+
+                while (results.hasNext()) {
+                    QuerySolution solution = results.next();
+
+                    path.add(source);
+                    for (int j = 0; j < i; j++) {
+                        path.add(solution.getResource("c" + j).toString());
+                    }
+
+                    path.add(target);
+                    done = true;
+                    break;
+                }
+            }
+
         }
 
         DBPediaService.DATASET.end();
-        return narrowers;
+
+        return path;
     }
 
-    public static List<String> findPath(String c1, String c2, int maxDistance, BfsMode bfsMode) {
 
-        // Get DBPedia concept using the SameAs service
-        String dbpC1 = SameAsService.getInstance().getDBPediaSameAs(c1);
-        String dbpC2 = SameAsService.getInstance().getDBPediaSameAs(c2);
+    public static List<String> findPath(String c1, String c2, int maxDistance, EdgeMode edgeMode, DBPediaProperty useProperty) {
 
-        if (dbpC1 == null || dbpC2 == null) {
-            LOG.info("No suitable DBPedia concept found");
-            return new LinkedList<>();
-        }
-
-        // Get the categories for the DBPedia concepts
-        Set<String> catC1 = DBPediaService.getCategories(dbpC1);
-        Set<String> catC2 = DBPediaService.getCategories(dbpC2);
-
-        if (catC1.isEmpty() || catC2.isEmpty()) {
-            LOG.info("No DBPedia categories found");
-            return new LinkedList<>();
-        }
-
-        // TODO is this check necessary?
-        if (c1.equals(c2)) {
-            List<String> path = new LinkedList<>();
-            path.add(c1);
-            return path;
-        }
-
-        // check if common category is already found
-        for (String s : catC1) {
-            if (catC2.contains(s)) {
-                List<String> path = new LinkedList<>();
-                path.add(c1);
-                path.add(s);
-                path.add(c2);
-                return path;
-            }
-        }
-
+        Set<String> sources;
+        Set<String> targets = new HashSet<>();
         // do BFS search to find edges
         Queue<String> bfsQueue = new LinkedList<>();
 
@@ -109,11 +143,58 @@ public class BfsSearch {
         Map<String, Integer> levels = new HashMap<>();
         levels.put(c1, 0);
 
-        for (String s : catC1) {
-            levels.put(s, 1);
-            bfsQueue.add(s);
-            reachedFrom.put(s, c1);
+
+        if (DBPediaProperty.BROADER == useProperty) {
+            // Get DBPedia concept using the SameAs service
+            String dbpC1 = SameAsService.getInstance().getDBPediaSameAs(c1);
+            String dbpC2 = SameAsService.getInstance().getDBPediaSameAs(c2);
+
+            if (dbpC1 == null || dbpC2 == null) {
+                LOG.info("No suitable DBPedia concept found");
+                return new LinkedList<>();
+            }
+
+            // Get the categories for the DBPedia concepts
+            sources = DBPediaService.getCategories(dbpC1);
+            targets = DBPediaService.getCategories(dbpC2);
+
+            if (sources.isEmpty() || targets.isEmpty()) {
+                LOG.info("No DBPedia categories found");
+                return new LinkedList<>();
+            }
+
+            // TODO is this check necessary?
+            if (c1.equals(c2)) {
+                List<String> path = new LinkedList<>();
+                path.add(c1);
+                return path;
+            }
+
+            // check if common category is already found
+            for (String s : sources) {
+                if (targets.contains(s)) {
+                    List<String> path = new LinkedList<>();
+                    path.add(c1);
+                    path.add(s);
+                    path.add(c2);
+                    return path;
+                }
+            }
+
+            for (String s : sources) {
+                levels.put(s, 1);
+                bfsQueue.add(s);
+                reachedFrom.put(s, c1);
+            }
+
+        } else {
+            //sources.add(c1);
+            bfsQueue.add(c1);
+            targets.add(c2);
         }
+
+
+
 
         boolean work = true;
         boolean found = false;
@@ -124,7 +205,12 @@ public class BfsSearch {
             if (levels.get(current) == maxDistance) {
                 work = false;
             } else {
-                List<String> nodes = getNextNodes(bfsMode, current);
+                List<String> nodes;
+                if (useProperty == DBPediaProperty.BROADER) {
+                    nodes = getNextNodes(current, edgeMode, SKOS_BROADER);
+                } else {
+                    nodes = getNextNodes(current, edgeMode, PAGE_LINK_PROPERTY);
+                }
 
                 for (String node : nodes) {
                     if (!reachedFrom.containsKey(node)) {
@@ -132,7 +218,7 @@ public class BfsSearch {
                         reachedFrom.put(node, current);
                         levels.put(node, levels.get(current) + 1);
 
-                        if (catC2.contains(node)) {
+                        if (targets.contains(node)) {
                             current = node;
                             work = false;
                             found = true;
@@ -151,7 +237,11 @@ public class BfsSearch {
 
         List<String> path = new LinkedList<>();
         if (found) {
-            path.add(c2);
+
+            if (useProperty == DBPediaProperty.BROADER) {
+                path.add(c2);
+            }
+
             // compute path
             path.add(current);
 
@@ -168,28 +258,12 @@ public class BfsSearch {
         return path;
     }
 
-    private static List<String> getNextNodes(BfsMode bfsMode, String current) {
-        List<String> nodes = new ArrayList<>();
-        if (bfsMode == BfsMode.BROADER_AND_NARROWER) {
-            nodes.addAll(getBroader(current));
-            nodes.addAll(getNarrower(current));
-        } else if (bfsMode == BfsMode.BROADER_ONLY) {
-            nodes.addAll(getBroader(current));
-        } else {
-            nodes.addAll(getNarrower(current));
-        }
-
-        return nodes;
-    }
-
-    public static int getDistance(String c1, String c2, int maxDistance, BfsMode bfsMode) {
-        return findPath(c1, c2, maxDistance, bfsMode).size() - 1;
+    public static int getDistance(String c1, String c2, int maxDistance, EdgeMode edgeMode, DBPediaProperty dbPediaProperty) {
+        return findPath(c1, c2, maxDistance, edgeMode, dbPediaProperty).size() - 1;
     }
 
     public static double getSimilarity(String c1, String c2) {
-        int maxDistance = Configuration.MAX_PATH_LENGTH;
-        BfsMode bfsMode = Configuration.BFS_MODE;
-        int distance = getDistance(c1, c2, maxDistance, bfsMode);
+        int distance = getDistance(c1, c2, Configuration.MAX_PATH_LENGTH, Configuration.EDGE_MODE, Configuration.dbPediaProperty);
 
         if (distance < 0) {
             return 0.0;

@@ -5,63 +5,39 @@ package de.uop.mics.bayerl.cube.similarity.matrix;
  */
 public class SimilarityMatrix {
 
-
+    // TODO make sure that rows >= cols
     private double[][] matrix;
+
+    private int[] mapping;
+    private double similarity;
 
 
     public SimilarityMatrix(int rows, int cols) {
         matrix = new double[rows][cols];
     }
 
-    public void setValue(int row, int col, double value) {
-        matrix[row][col] = value;
+    public double[][] getMatrix() {
+        return matrix;
     }
 
-    public double getValue(int row, int col) {
-        return matrix[row][col];
+    public void setMatrix(double[][] matrix) {
+        this.matrix = matrix;
     }
 
-    public void setRow(int row, double[] rowValues) {
-        matrix[row] = rowValues;
+
+    public int[] getMapping() {
+        return mapping;
     }
 
-    public double[] getRow(int row) {
-        return matrix[row];
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-
-        for (int i = 0; i < matrix.length; i++) {
-
-            for (int j = 0; j < matrix[0].length; j++) {
-                sb.append(matrix[i][j]);
-                sb.append("   ");
-            }
-
-            sb.append("\n");
-        }
-
-        return sb.toString();
+    public void setMapping(int[] mapping) {
+        this.mapping = mapping;
     }
 
     public double getSimilarity() {
-        // TODO do this right
-        double sim = 0;
-
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[0].length; j++) {
-                if (matrix[i][j] > 0) {
-                    sim += matrix[i][j];
-                }
-            }
-        }
-
-
-
-        return sim;
+        return similarity;
     }
 
-
+    public void setSimilarity(double similarity) {
+        this.similarity = similarity;
+    }
 }

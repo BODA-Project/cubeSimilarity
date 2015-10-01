@@ -1,6 +1,7 @@
 package de.uop.mics.bayerl.cube;
 
-import de.uop.mics.bayerl.cube.similarity.hierarchies.dbpedia.BfsMode;
+import de.uop.mics.bayerl.cube.similarity.hierarchies.dbpedia.DBPediaProperty;
+import de.uop.mics.bayerl.cube.similarity.hierarchies.dbpedia.EdgeMode;
 import de.uop.mics.bayerl.cube.similarity.string.DistanceAlgorithm;
 
 /**
@@ -14,5 +15,6 @@ public class Configuration {
     public static double similarity_base = 0.8;
     public static int COMMON_CONCEPT_MAX_DISTANCE = 5;
     public static int MAX_PATH_LENGTH = 5;
-    public static BfsMode BFS_MODE = BfsMode.BROADER_AND_NARROWER;
+    public static EdgeMode EDGE_MODE = EdgeMode.BOTH;
+    public static DBPediaProperty dbPediaProperty = DBPediaProperty.BROADER;
 }

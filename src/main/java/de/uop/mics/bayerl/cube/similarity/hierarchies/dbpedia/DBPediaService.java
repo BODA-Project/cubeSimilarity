@@ -1,9 +1,8 @@
 package de.uop.mics.bayerl.cube.similarity.hierarchies.dbpedia;
 
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.tdb.TDBFactory;
-import de.uop.mics.bayerl.cube.similarity.concept.SameAsService;
+import org.apache.jena.query.*;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.tdb.TDBFactory;
 import org.apache.log4j.Logger;
 
 import java.util.HashSet;
@@ -18,7 +17,12 @@ public class DBPediaService {
 
     private final static String FOLDER = "/Users/sebastianbayerl/Desktop/desktop/sorted/Work/-1_CubeSimilarity/";
     private final static String TDB_FOLDER = "TDB/4/";
-    public final static Dataset DATASET = TDBFactory.createDataset(FOLDER + TDB_FOLDER);
+
+    private final static String TDB_FULL = "/Volumes/TOSHIBA_2TB/CubeSimilarity/data/TDB/5/";
+    private final static String TDB_FULL_LOCAL = "/Users/sebastianbayerl/Desktop/TDB/5/";
+    public final static Dataset DATASET = TDBFactory.createDataset(TDB_FULL_LOCAL);
+
+
 
     private final static String DCT_SUBJECT = "http://purl.org/dc/terms/subject";
 
