@@ -13,7 +13,7 @@ public class EqualConcepts extends ComputeComponentSimilarity {
     }
 
     @Override
-    double getSimilarity(Component co1, Component co2) {
+    public double getSimilarity(Component co1, Component co2) {
         String c1 = co1.getConcept();
         String c2 = co2.getConcept();
 

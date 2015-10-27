@@ -15,12 +15,12 @@ public class BfsSearch {
 
 
     private final static String PAGE_LINK_PROPERTY = "<http://dbpedia.org/ontology/wikiPageWikiLink>";
-    private final static String SKOS_BROADER = "<http://www.w3.org/2004/02/skos/core#broader>";
+    public final static String SKOS_BROADER = "<http://www.w3.org/2004/02/skos/core#broader>";
 
     private final static Logger LOG = Logger.getLogger(BfsSearch.class);
 
 
-    private static List<String> getNextNodes(String concept, EdgeMode edgeMode, String property) {
+    public static List<String> getNextNodes(String concept, EdgeMode edgeMode, String property) {
         List<String> nodes = new ArrayList<>();
 
         if (edgeMode == EdgeMode.BOTH) {
@@ -56,7 +56,7 @@ public class BfsSearch {
             prepareQuery.setIri("s", concept);
         }
 
-        LOG.info("query: " + prepareQuery.toString());
+        //LOG.info("query: " + prepareQuery.toString());
 
         DBPediaService.DATASET.begin(ReadWrite.READ);
         Model model = DBPediaService.DATASET.getDefaultModel();
@@ -193,9 +193,6 @@ public class BfsSearch {
             targets.add(c2);
         }
 
-
-
-
         boolean work = true;
         boolean found = false;
 
@@ -262,8 +259,13 @@ public class BfsSearch {
         return findPath(c1, c2, maxDistance, edgeMode, dbPediaProperty).size() - 1;
     }
 
-    public static double getSimilarity(String c1, String c2) {
-        int distance = getDistance(c1, c2, Configuration.MAX_PATH_LENGTH, Configuration.EDGE_MODE, Configuration.dbPediaProperty);
+    public static double getSimilarity(String c1, String c2, DBPediaProperty dbPediaProperty) {
+        int distance = 0;
+        if (dbPediaProperty == DBPediaProperty.BROADER) {
+            distance = getDistance(c1, c2, Configuration.MAX_PATH_LENGTH_CATEGORY, Configuration.EDGE_MODE, DBPediaProperty.BROADER);
+        } else if (dbPediaProperty == DBPediaProperty.PAGE_LINK) {
+            distance = findDirectPath(c1, c2, Configuration.MAX_PATH_LENGTH_PAGELINK).size() - 1;
+        }
 
         if (distance < 0) {
             return 0.0;
@@ -271,4 +273,7 @@ public class BfsSearch {
 
         return Math.pow(Configuration.similarity_base, distance);
     }
+
+
+
 }

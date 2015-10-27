@@ -73,7 +73,7 @@ public class MatrixUtil {
         return similarityMatrix;
     }
 
-    public static double getSimpleSimilarity(SimilarityMatrix simMatrix) {
+    public static SimilarityMatrix useSimpleSimilarity(SimilarityMatrix simMatrix) {
         double[][] matrix = simMatrix.getMatrix();
         double sum = 0d;
 
@@ -85,10 +85,11 @@ public class MatrixUtil {
 
         double similarity = sum / (double) (matrix.length * matrix[0].length);
 
-        return similarity;
+        simMatrix.setSimilarity(similarity);
+        return simMatrix;
     }
 
-    public static double getSimilarity(SimilarityMatrix simMatrix) {
+    public static SimilarityMatrix useHeuristicSimilarity(SimilarityMatrix simMatrix) {
         double[][] matrix = simMatrix.getMatrix();
         double sim = 0d;
         double[][] temp = matrix.clone();
@@ -98,11 +99,12 @@ public class MatrixUtil {
         for (int run = 0; run < temp.length; run++) {
             int r = 0;
             int c = 0;
-            int max = 0;
+            double max = 0;
 
             for (int i = 0; i < temp.length; i++) {
                 for (int j = 0; j < temp[0].length; j++) {
                     if (temp[i][j] > max) {
+                        max = temp[i][j];
                         r = i;
                         c = j;
                     }
@@ -120,12 +122,15 @@ public class MatrixUtil {
 
         // compute final similarity
         for (double s : sims) {
+            System.out.println(s);
             sim += s;
         }
 
         sim /= temp[0].length;
 
-        return sim;
+        simMatrix.setSimilarity(sim);
+
+        return simMatrix;
     }
 
     private static double[][] resetMatching(double[][] m, int r, int c) {

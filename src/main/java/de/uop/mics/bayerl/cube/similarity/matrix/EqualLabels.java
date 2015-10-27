@@ -12,10 +12,10 @@ public class EqualLabels extends ComputeComponentSimilarity {
     }
 
     @Override
-    double getSimilarity(Component co1, Component co2) {
+    public double getSimilarity(Component co1, Component co2) {
         String l1 = co1.getLabel();
         String l2 = co2.getLabel();
 
-        return l1.equals(l2) ? 1d : 0d;
+        return l1.equalsIgnoreCase(l2) ? 1d : 0d;
     }
 }

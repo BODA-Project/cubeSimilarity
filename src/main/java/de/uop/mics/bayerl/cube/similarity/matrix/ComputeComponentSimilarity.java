@@ -12,7 +12,7 @@ public abstract class ComputeComponentSimilarity {
 
     public abstract String getName();
 
-    abstract double getSimilarity(Component co1, Component co2);
+    public abstract double getSimilarity(Component co1, Component co2);
 
     public SimilarityMatrix computeMatrix(Cube c1, Cube c2) {
         List<Component> comp1 = c1.getStructureDefinition().getComponents();

@@ -4,7 +4,10 @@ package de.uop.mics.bayerl.cube.rest;
 import de.uop.mics.bayerl.cube.model.Cube;
 import de.uop.mics.bayerl.cube.rest.repository.CubeRepository;
 import de.uop.mics.bayerl.cube.rest.service.CubeService;
+import de.uop.mics.bayerl.cube.similarity.MatrixAggregation;
+import de.uop.mics.bayerl.cube.similarity.Metric;
 import de.uop.mics.bayerl.cube.similarity.RankingItem;
+import org.apache.jena.ext.com.google.common.base.Stopwatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 public class Controller {
@@ -36,26 +40,15 @@ public class Controller {
         return cubes;
     }
 
-//    @RequestMapping(value = "/similarities", method = RequestMethod.GET)
-//    public List<String> getSimilarities() {
-//
-//        List<String> similarities = new ArrayList<>();
-//        similarities.add("Label - 1");
-//        similarities.add("Label - 2");
-//
-//        return similarities;
-//    }
-
     @RequestMapping(value = "/metrics", method = RequestMethod.GET)
     public Map<String, List<String>> getAvailableMeasures() {
         Map<String, List<String>> result = new HashMap<>();
 
         List<String> componentBased = new ArrayList<>();
-        componentBased.add("Label equality");
-        componentBased.add("Label similarity");
-        componentBased.add("Concept equality");
-        componentBased.add("Concept equality - sameAs extended");
-        componentBased.add("Concept similarity - DBPedia Hierarchie BFS");
+        for (Metric metric : Metric.values()) {
+            componentBased.add(metric.name());
+        }
+
         result.put("componentBased", componentBased);
 
         List<String> datasetBased = new ArrayList<>();
@@ -67,19 +60,42 @@ public class Controller {
     }
 
     @RequestMapping(value = "/cubes/{id}/compute-ranking", method = RequestMethod.GET)
-    public List<RankingItem> getRanking(@PathVariable String id, @RequestParam(value="metric")  String metric) {
-        return cubeService.computeRanking(id, metric);
+    public List<RankingItem> getRanking(@PathVariable String id, @RequestParam String matrixAggr, @RequestParam(value="metric")  String metric) {
+        Stopwatch sw = Stopwatch.createStarted();
+        System.out.println("Start ranking: " + metric + " " + matrixAggr);
+        List<RankingItem> rankingItems = cubeService.computeRanking(id, metric, matrixAggr);
+        System.out.println("Done ranking: " + sw.elapsed(TimeUnit.SECONDS) + " [s]");
+
+        return rankingItems;
     }
 
     @RequestMapping(value = "/cubes/{id}/compute-similarity", method = RequestMethod.GET)
-    public RankingItem getComputedSimilarity(@PathVariable String id, @RequestParam String secondCube,
-                                             @RequestParam String metric, @RequestParam(required = false) String testset) {
-        return cubeService.computeSimilarity(id, secondCube, metric);
+    public RankingItem getSimilarity(@PathVariable String id, @RequestParam String secondCube,
+                                             @RequestParam String metric,
+                                             @RequestParam String matrixAggr,
+                                             @RequestParam(required = false) String testset) {
+        Stopwatch sw = Stopwatch.createStarted();
+        System.out.println("Start similarity: " + metric + " " + matrixAggr);
+        RankingItem rankingItem = cubeService.computeSimilarity(id, secondCube, metric, matrixAggr);
+        System.out.println("Done similarity: " + sw.elapsed(TimeUnit.SECONDS) + " [s]");
+        return rankingItem;
     }
 
     @RequestMapping(value = "/cubes/{id}", method = RequestMethod.GET)
-    public Cube getComputedSimilarity(@PathVariable String id) {
+    public Cube getCube(@PathVariable String id) {
         return cubeRepository.getCube(id);
     }
 
+
+    @RequestMapping(value = "/matrix-aggregation", method = RequestMethod.GET)
+    public List<String> getMatrixAggregations() {
+        List<String> result = new ArrayList<>();
+        for (MatrixAggregation matrixAggregation : MatrixAggregation.values()) {
+            result.add(matrixAggregation.name());
+        }
+
+        return result;
+    }
+
+    // TODO get path for visualization
 }

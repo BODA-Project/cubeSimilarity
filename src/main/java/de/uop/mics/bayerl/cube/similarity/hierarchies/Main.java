@@ -1,8 +1,5 @@
 package de.uop.mics.bayerl.cube.similarity.hierarchies;
 
-import de.uop.mics.bayerl.cube.similarity.hierarchies.dbpedia.BfsSearch;
-import de.uop.mics.bayerl.cube.similarity.hierarchies.dbpedia.EdgeMode;
-
 /**
  * Created by sebastianbayerl on 24/07/15.
  */
@@ -16,7 +13,7 @@ public class Main {
         String c2 = "http://dbpedia.org/resource/Category:Laughter"; // x x x t y
 
 
-        System.out.println(BfsSearch.getSimilarity(c1, c2));
+        //System.out.println(BfsSearch.getSimilarity(c1, c2));
 //        System.out.println(BfsSearch.getSimilarity(c1, c2, 5, BfsMode.BROADER_ONLY));
 //        System.out.println(BfsSearch.getSimilarity(c1, c2, 5, BfsMode.BROADER_AND_NARROWER));
 //        System.out.println(FindTopConcept.getSimilarity(c1, c2, 5));

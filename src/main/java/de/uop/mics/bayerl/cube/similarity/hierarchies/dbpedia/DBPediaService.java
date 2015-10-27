@@ -55,7 +55,7 @@ public class DBPediaService {
         ParameterizedSparqlString prepareQuery = new ParameterizedSparqlString(queryString);
         prepareQuery.setIri("s", c);
         prepareQuery.setIri("p", DCT_SUBJECT);
-        LOG.info(prepareQuery.toString());
+        //LOG.info(prepareQuery.toString());
 
         DATASET.begin(ReadWrite.READ);
         Model model = DATASET.getDefaultModel();

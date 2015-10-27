@@ -1,5 +1,7 @@
 package de.uop.mics.bayerl.cube.similarity;
 
+import de.uop.mics.bayerl.cube.similarity.matrix.SimilarityMatrix;
+
 /**
  * Created by sebastianbayerl on 03/09/15.
  */
@@ -7,8 +9,8 @@ public class RankingItem {
 
     private String sourceId;
     private String targetId;
-    private double similarity;
     private String metric;
+    private SimilarityMatrix similarityMatrix;
 
     public String getSourceId() {
         return sourceId;
@@ -26,19 +28,19 @@ public class RankingItem {
         this.targetId = targetId;
     }
 
-    public double getSimilarity() {
-        return similarity;
-    }
-
-    public void setSimilarity(double similarity) {
-        this.similarity = similarity;
-    }
-
     public String getMetric() {
         return metric;
     }
 
     public void setMetric(String metric) {
         this.metric = metric;
+    }
+
+    public SimilarityMatrix getSimilarityMatrix() {
+        return similarityMatrix;
+    }
+
+    public void setSimilarityMatrix(SimilarityMatrix similarityMatrix) {
+        this.similarityMatrix = similarityMatrix;
     }
 }
