@@ -158,8 +158,13 @@ public class BfsSearch {
             sources = DBPediaService.getCategories(dbpC1);
             targets = DBPediaService.getCategories(dbpC2);
 
-            if (sources.isEmpty() || targets.isEmpty()) {
-                LOG.info("No DBPedia categories found");
+            if (sources.isEmpty() ) {
+                LOG.info("No DBPedia categories found for source: " + dbpC1);
+                return new LinkedList<>();
+            }
+
+            if (targets.isEmpty()) {
+                LOG.info("No DBPedia categories found for target: " + dbpC2);
                 return new LinkedList<>();
             }
 

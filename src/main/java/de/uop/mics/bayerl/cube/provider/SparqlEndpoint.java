@@ -10,7 +10,6 @@ public class SparqlEndpoint implements Serializable {
     private String id;
     private String name;
     private String title;
-    private String url;
     private String endpoint;
 
     public String getId() {
@@ -35,14 +34,6 @@ public class SparqlEndpoint implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     public String getEndpoint() {

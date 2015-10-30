@@ -5,6 +5,9 @@ package de.uop.mics.bayerl.cube.similarity.matrix;
  */
 public class MatrixUtil {
 
+    private static double THRESHOLD = 0.7;
+    private static double ALPHA = 0.5;
+
     // TODO implement: merge weighted matrices
 
     public static double[][] getMax(double[][] a, double[][] b) {
@@ -43,6 +46,32 @@ public class MatrixUtil {
         return sb.toString();
     }
 
+    public static SimilarityMatrix useWeightedAlgorithm(SimilarityMatrix similarityMatrix) {
+        // TODO add sims that are above a threshold?
+        int count1 = 0;
+        double addSim = 0.0;
+//        double maxSim = 0.0;
+        //int count0 = 0;
+
+        for (int i = 0; i < similarityMatrix.getMatrix().length; i++) {
+            for (int j = 0; j < similarityMatrix.getMatrix()[0].length; j++) {
+                double current = similarityMatrix.getMatrix()[i][j];
+                if (current == 1.0) {
+                    count1++;
+//                } else if (current == 0.0) {
+//                    count0++;
+                } else if (current >= THRESHOLD) {
+                    addSim += ALPHA * current;
+                }
+            }
+        }
+
+        double similarity = count1 + addSim;
+        similarityMatrix.setSimilarity(similarity);
+
+        return similarityMatrix;
+    }
+
     public static SimilarityMatrix useHungarianAlgorithm(SimilarityMatrix similarityMatrix) {
 
         double[][] temp = new double[similarityMatrix.getMatrix().length][similarityMatrix.getMatrix()[0].length];
@@ -73,7 +102,7 @@ public class MatrixUtil {
         return similarityMatrix;
     }
 
-    public static SimilarityMatrix useSimpleSimilarity(SimilarityMatrix simMatrix) {
+    public static SimilarityMatrix useSimpleSimilarity(SimilarityMatrix simMatrix, boolean normalize) {
         double[][] matrix = simMatrix.getMatrix();
         double sum = 0d;
 
@@ -83,7 +112,10 @@ public class MatrixUtil {
             }
         }
 
-        double similarity = sum / (double) (matrix.length * matrix[0].length);
+        double similarity = sum;
+        if (normalize) {
+            similarity = sum / (double) (matrix.length * matrix[0].length);
+        }
 
         simMatrix.setSimilarity(similarity);
         return simMatrix;
@@ -122,7 +154,6 @@ public class MatrixUtil {
 
         // compute final similarity
         for (double s : sims) {
-            System.out.println(s);
             sim += s;
         }
 

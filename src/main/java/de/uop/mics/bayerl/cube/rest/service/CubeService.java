@@ -63,11 +63,15 @@ public class CubeService {
         MatrixAggregation matrixAggr = MatrixAggregation.valueOf(matrixAggregation);
         SimilarityMatrix resultMatrix = null;
         if (matrixAggr == MatrixAggregation.SIMPLE) {
-            resultMatrix = MatrixUtil.useSimpleSimilarity(matrix);
+            resultMatrix = MatrixUtil.useSimpleSimilarity(matrix, false);
+        } else if (matrixAggr == MatrixAggregation.SIMPLE_NORMALIZE) {
+            resultMatrix = MatrixUtil.useSimpleSimilarity(matrix, true);
         } else if (matrixAggr == MatrixAggregation.HEURISTIC) {
             resultMatrix = MatrixUtil.useHeuristicSimilarity(matrix);
         } else if (matrixAggr == MatrixAggregation.HUNGARIAN_ALGORITHM) {
-            resultMatrix  = MatrixUtil.useHungarianAlgorithm(matrix);
+            resultMatrix = MatrixUtil.useHungarianAlgorithm(matrix);
+        } else if (matrixAggr == MatrixAggregation.WEIGHTED) {
+            resultMatrix = MatrixUtil.useWeightedAlgorithm(matrix);
         }
 
         rankingItem.setSimilarityMatrix(resultMatrix);

@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class DBPediaExampleProvider {
 
-    private static final String PREFIX = "http://dbpedia.org/resource/";
+    public static final String PREFIX = "http://dbpedia.org/resource/";
 
 
     public static List<Cube> generateCubes() {

@@ -1,7 +1,7 @@
 package de.uop.mics.bayerl.cube.rest.repository;
 
 import de.uop.mics.bayerl.cube.model.Cube;
-import de.uop.mics.bayerl.cube.provider.DBPediaExampleProvider;
+import de.uop.mics.bayerl.cube.provider.WordSimilarityProvider;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,7 +12,11 @@ import java.util.List;
 @Repository
 public class CubeRepository {
 
-    private final List<Cube> cubes = DBPediaExampleProvider.generateCubes();//CubeGenerator.createCubes(10);
+//    private final List<Cube> cubes = CubeGenerator.createCubes(10);
+    private final List<Cube> cubes = WordSimilarityProvider.getCubes();
+//    private final List<Cube> cubes = DBPediaExampleProvider.generateCubes();
+//    private final List<Cube> cubes = Datahub.provideCubes();
+
 
     public Cube getFirst() {
         return cubes.get(0);
