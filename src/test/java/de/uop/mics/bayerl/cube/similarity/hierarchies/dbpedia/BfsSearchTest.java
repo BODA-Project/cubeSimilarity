@@ -41,7 +41,7 @@ public class BfsSearchTest {
         List<String> path = BfsSearch.findPath(c1, c2, 10, EdgeMode.BOTH, DBPediaProperty.BROADER);
         System.out.println("Path: ");
         System.out.println(path);
-        BFSContext.getPathContext(path);
+        BFSContext.getPathContext(path, false);
 
     }
 }

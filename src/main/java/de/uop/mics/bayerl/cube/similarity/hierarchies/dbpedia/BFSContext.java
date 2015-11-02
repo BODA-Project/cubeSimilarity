@@ -25,9 +25,9 @@ public class BFSContext {
     private static final int NODE_GRP_PATH = 1;
     private static final int NODE_GRP = 2;
 
-    private static final int BFS_DEPTH = 1;
+    private static final int BFS_DEPTH = 2;
 
-    public static String getPathContext(List<String> p) {
+    public static String getPathContext(List<String> p, boolean includeLeafs) {
         List<String> path = new ArrayList<>();
 
         for (String s : p) {
@@ -61,7 +61,6 @@ public class BFSContext {
                         if (!visited.contains(n)) {
                             tempTarget.add(n);
                         }
-
                     }
                     visited.addAll(nodes);
                     allNodes.addAll(nodes);
@@ -70,7 +69,6 @@ public class BFSContext {
                 temp = tempTarget;
             }
         }
-
 
         // path nodes
         Set<String> pathNodes = new HashSet<>();
@@ -128,12 +126,12 @@ public class BFSContext {
 
         // add start and end of the path
         Node startNode = new Node();
-        startNode.setName(p.get(0).replace("http://dbpedia.org/resource/", ""));
+        startNode.setName(p.get(0).replace("http://dbpedia.org/resource/", "dbp:"));
         startNode.setGroup(NODE_GRP_ITEM);
         nodes[nodes.length - 2] = startNode;
 
         Node endNode = new Node();
-        endNode.setName(p.get(p.size() - 1).replace("http://dbpedia.org/resource/", ""));
+        endNode.setName(p.get(p.size() - 1).replace("http://dbpedia.org/resource/", "dbp:"));
         endNode.setGroup(NODE_GRP_ITEM);
         nodes[nodes.length - 1] = endNode;
 
@@ -148,6 +146,10 @@ public class BFSContext {
         endLink.setTarget(nodes.length - 1);
         endLink.setValue(LINK_VAL_PATH);
         links[links.length - 1] = endLink;
+
+        if (!includeLeafs) {
+            graph = reduceGraph(graph);
+        }
 
         ObjectMapper mapper = new ObjectMapper();
         String output = "error";
@@ -164,5 +166,93 @@ public class BFSContext {
         }
 
         return output;
+    }
+
+    private static Graph reduceGraph(Graph graph) {
+        List<Node> nodes = new ArrayList<>(Arrays.asList(graph.getNodes()));
+        List<Link> links = new ArrayList<>(Arrays.asList(graph.getLinks()));
+
+        Map<String, Integer> nodePosition = new HashMap<>();
+
+        for (int i = 0; i < nodes.size(); i++) {
+            System.out.println(nodes.get(i).getName() + " " +  i);
+            nodePosition.put(nodes.get(i).getName(), i);
+        }
+
+        boolean work = true;
+
+        while (work) {
+            List<Node> deleteNodes = new ArrayList<>();
+            for (Node node : nodes) {
+                // check for links
+
+                if (node.getGroup() != NODE_GRP_ITEM) {
+                    int nrOfLinks = 0;
+
+                    for (Link link : links) {
+                        int nodePos = nodePosition.get(node.getName());
+                        if (link.getSource() == nodePos || link.getTarget() == nodePos) {
+                            nrOfLinks++;
+
+                            if (nrOfLinks > 1) {
+                                break;
+                            }
+                        }
+                    }
+
+                    if (nrOfLinks == 1) {
+                        deleteNodes.add(node);
+                    }
+                }
+            }
+
+            if (deleteNodes.size() == 0) {
+                work = false;
+            } else {
+                System.out.println("delete: " + deleteNodes.size());
+                for (Node deleteNode : deleteNodes) {
+                    nodes.remove(deleteNode);
+                    int nodePos = nodePosition.get(deleteNode.getName());
+
+                    Set<Link> deleteLinks = new HashSet<>();
+                    for (Link link : links) {
+                        if (link.getSource() == nodePos || link.getTarget() == nodePos) {
+                            deleteLinks.add(link);
+                        }
+                    }
+
+                    for (Link deleteLink : deleteLinks) {
+                        links.remove(deleteLink);
+                    }
+                }
+            }
+        }
+
+
+        Map<Integer, Integer> newPositions = new HashMap<>();
+
+
+        for (int i = 0; i < nodes.size(); i++) {
+            Node node = nodes.get(i);
+            int oldPos = nodePosition.get(node.getName());
+
+            newPositions.put(oldPos, i);
+        }
+
+        // generate new links
+        List<Link> newLinks = new ArrayList<>();
+
+        for (Link link : links) {
+            Link newLink = new Link();
+            newLink.setValue(link.getValue());
+            newLink.setSource(newPositions.get(link.getSource()));
+            newLink.setTarget(newPositions.get(link.getTarget()));
+            newLinks.add(newLink);
+        }
+
+        graph.setNodes(nodes.toArray(new Node[nodes.size()]));
+        graph.setLinks(newLinks.toArray(new Link[newLinks.size()]));
+
+        return graph;
     }
 }
