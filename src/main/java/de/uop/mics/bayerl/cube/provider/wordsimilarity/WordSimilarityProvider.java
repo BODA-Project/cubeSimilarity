@@ -1,7 +1,8 @@
-package de.uop.mics.bayerl.cube.provider;
+package de.uop.mics.bayerl.cube.provider.wordsimilarity;
 
 import de.uop.mics.bayerl.cube.model.Cube;
 import de.uop.mics.bayerl.cube.model.Dimension;
+import de.uop.mics.bayerl.cube.provider.DBPediaExampleProvider;
 
 import java.util.*;
 

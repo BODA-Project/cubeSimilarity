@@ -1,4 +1,4 @@
-package de.uop.mics.bayerl.cube.provider;
+package de.uop.mics.bayerl.cube.provider.wordsimilarity;
 
 /**
  * Created by sebastianbayerl on 28/10/15.
