@@ -20,7 +20,9 @@ public class DBPediaService {
 
     private final static String TDB_FULL = "/Volumes/TOSHIBA_2TB/CubeSimilarity/data/TDB/5/";
     private final static String TDB_FULL_LOCAL = "/Users/sebastianbayerl/Desktop/TDB/5/";
-    public final static Dataset DATASET = TDBFactory.createDataset(TDB_FULL_LOCAL);
+
+    private final static String TDB_WIN = "C:\\Users\\Sebastian\\Desktop\\TDB\\5\\";
+    public final static Dataset DATASET = TDBFactory.createDataset(TDB_WIN);
 
 
 

@@ -16,7 +16,6 @@ public class BfsSearch {
 
     private final static String PAGE_LINK_PROPERTY = "<http://dbpedia.org/ontology/wikiPageWikiLink>";
     public final static String SKOS_BROADER = "<http://www.w3.org/2004/02/skos/core#broader>";
-
     private final static Logger LOG = Logger.getLogger(BfsSearch.class);
 
 
