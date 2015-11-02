@@ -1,7 +1,7 @@
 package de.uop.mics.bayerl.cube.rest.repository;
 
 import de.uop.mics.bayerl.cube.model.Cube;
-import de.uop.mics.bayerl.cube.provider.WordSimilarityProvider;
+import de.uop.mics.bayerl.cube.provider.wordsimilarity.WordSimilarityProvider;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

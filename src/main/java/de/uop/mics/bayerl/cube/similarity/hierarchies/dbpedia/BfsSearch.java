@@ -36,7 +36,7 @@ public class BfsSearch {
     }
 
 
-    private static List<String> queryTDB(String concept, String property, boolean incoming) {
+    public static List<String> queryTDB(String concept, String property, boolean incoming) {
         List<String> concepts = new ArrayList<>();
         String queryString = " SELECT ";
 

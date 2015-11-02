@@ -24,7 +24,7 @@ public class DBPediaService {
 
 
 
-    private final static String DCT_SUBJECT = "http://purl.org/dc/terms/subject";
+    public final static String DCT_SUBJECT = "http://purl.org/dc/terms/subject";
 
     // export JENAROOT=/Users/sebastianbayerl/Downloads/apache-jena-2.13.0/
     // tdbloader2 --loc=TDB/3 dbpadia-categories/*.nt
