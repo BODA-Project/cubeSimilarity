@@ -14,7 +14,6 @@ public class Application extends SpringBootServletInitializer {
 
     private static Log logger = LogFactory.getLog(Application.class);
 
-
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(Application.class);

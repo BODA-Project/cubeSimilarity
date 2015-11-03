@@ -48,7 +48,7 @@ public class BFSContext {
             for (int i = 0; i < BFS_DEPTH; i++) {
                 Set<String> tempTarget = new HashSet<>();
                 for (String node : temp) {
-                    List<String> nodes = BfsSearch.getNextNodes(node, EdgeMode.BOTH, BfsSearch.SKOS_BROADER);
+                    List<String> nodes = BfsSearch.getInstance().getNextNodes(node, EdgeMode.BOTH, BfsSearch.SKOS_BROADER);
 
                     for (String n : nodes) {
                         // add edges

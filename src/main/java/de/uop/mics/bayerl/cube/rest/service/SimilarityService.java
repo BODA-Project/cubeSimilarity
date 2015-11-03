@@ -5,9 +5,9 @@ import de.uop.mics.bayerl.cube.rest.repository.CubeRepository;
 import de.uop.mics.bayerl.cube.similarity.MatrixAggregation;
 import de.uop.mics.bayerl.cube.similarity.Metric;
 import de.uop.mics.bayerl.cube.similarity.RankingItem;
-import de.uop.mics.bayerl.cube.similarity.hierarchies.dbpedia.DBPediaProperty;
-import de.uop.mics.bayerl.cube.similarity.matrix.*;
-import de.uop.mics.bayerl.cube.similarity.string.DistanceAlgorithm;
+import de.uop.mics.bayerl.cube.similarity.SimilarityUtil;
+import de.uop.mics.bayerl.cube.similarity.matrix.ComputeComponentSimilarity;
+import de.uop.mics.bayerl.cube.similarity.matrix.SimilarityMatrix;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,16 +19,10 @@ import java.util.List;
  * Created by sebastianbayerl on 03/09/15.
  */
 @Service
-public class CubeService {
+public class SimilarityService {
 
     @Autowired
     private CubeRepository cubeRepository;
-
-    private Metric getMetric(String metric) {
-        return Metric.valueOf(metric);
-
-
-    }
 
     public RankingItem computeSimilarity(String cube1, String cube2, String metric, String matrixAggregation) {
         RankingItem rankingItem = new RankingItem();
@@ -37,43 +31,14 @@ public class CubeService {
         rankingItem.setTargetId(cube2);
 
         Metric m = Metric.valueOf(metric);
-        ComputeComponentSimilarity computeComponentSimilarity = null;
-
-        if (m == Metric.CONCEPT_EQUALITY) {
-            computeComponentSimilarity = new EqualConcepts();
-        } else if (m == Metric.LABEL_SIMILARITY) {
-            computeComponentSimilarity = new LabelSimilarity(DistanceAlgorithm.JARO_WINKLER);
-        } else if (m == Metric.LABEL_EQUALITY) {
-            computeComponentSimilarity = new EqualLabels();
-        } else if (m == Metric.CONCEPT_EQUALITY_SAMEAS) {
-            computeComponentSimilarity = new SameAsExtended();
-        } else if (m == Metric.DBPEDIA_CATEGORY) {
-            computeComponentSimilarity = new BfsSimilarity(DBPediaProperty.BROADER);
-        } else if (m == Metric.DBPEDIA_ENTITY) {
-            computeComponentSimilarity = new BfsSimilarity(DBPediaProperty.PAGE_LINK);
-        } else if (m == Metric.WORD_2_VEC) {
-            computeComponentSimilarity = new Word2Vec();
-        }
+        ComputeComponentSimilarity computeComponentSimilarity = SimilarityUtil.getAlgorithmForMetric(m);
 
         Cube c1 = cubeRepository.getCube(rankingItem.getSourceId());
         Cube c2 = cubeRepository.getCube(rankingItem.getTargetId());
         SimilarityMatrix matrix = computeComponentSimilarity.computeMatrix(c1, c2);
 
-
         MatrixAggregation matrixAggr = MatrixAggregation.valueOf(matrixAggregation);
-        SimilarityMatrix resultMatrix = null;
-        if (matrixAggr == MatrixAggregation.SIMPLE) {
-            resultMatrix = MatrixUtil.useSimpleSimilarity(matrix, false);
-        } else if (matrixAggr == MatrixAggregation.SIMPLE_NORMALIZE) {
-            resultMatrix = MatrixUtil.useSimpleSimilarity(matrix, true);
-        } else if (matrixAggr == MatrixAggregation.HEURISTIC) {
-            resultMatrix = MatrixUtil.useHeuristicSimilarity(matrix);
-        } else if (matrixAggr == MatrixAggregation.HUNGARIAN_ALGORITHM) {
-            resultMatrix = MatrixUtil.useHungarianAlgorithm(matrix);
-        } else if (matrixAggr == MatrixAggregation.WEIGHTED) {
-            resultMatrix = MatrixUtil.useWeightedAlgorithm(matrix);
-        }
-
+        SimilarityMatrix resultMatrix = SimilarityUtil.doMatrixAggregation(matrixAggr, matrix);
         rankingItem.setSimilarityMatrix(resultMatrix);
 
         // Simplify result
@@ -84,7 +49,6 @@ public class CubeService {
         }
 
         resultMatrix.setSimilarity((int) (100 * resultMatrix.getSimilarity()));
-
 
         return rankingItem;
     }

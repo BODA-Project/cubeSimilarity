@@ -13,13 +13,27 @@ import java.util.*;
  */
 public class BfsSearch {
 
+    private boolean doCache = false;
+    private Map<String, List<String>> cache;
+    private static BfsSearch instance;
 
     private final static String PAGE_LINK_PROPERTY = "<http://dbpedia.org/ontology/wikiPageWikiLink>";
     public final static String SKOS_BROADER = "<http://www.w3.org/2004/02/skos/core#broader>";
     private final static Logger LOG = Logger.getLogger(BfsSearch.class);
 
+    private BfsSearch() {
+        cache = new HashMap<>();
+    }
 
-    public static List<String> getNextNodes(String concept, EdgeMode edgeMode, String property) {
+    public static BfsSearch getInstance() {
+        if (instance == null) {
+            instance = new BfsSearch();
+        }
+
+        return instance;
+    }
+
+        public List<String> getNextNodes(String concept, EdgeMode edgeMode, String property) {
         List<String> nodes = new ArrayList<>();
 
         if (edgeMode == EdgeMode.BOTH) {
@@ -35,7 +49,15 @@ public class BfsSearch {
     }
 
 
-    public static List<String> queryTDB(String concept, String property, boolean incoming) {
+    public List<String> queryTDB(String concept, String property, boolean incoming) {
+
+        String key = concept + property + incoming;
+        if (doCache) {
+            if (cache.containsKey(key)) {
+                return cache.get(key);
+            }
+        }
+
         List<String> concepts = new ArrayList<>();
         String queryString = " SELECT ";
 
@@ -75,6 +97,10 @@ public class BfsSearch {
         }
 
         DBPediaService.DATASET.end();
+
+        if (doCache) {
+            cache.put(key, concepts);
+        }
 
         return concepts;
     }
@@ -128,7 +154,7 @@ public class BfsSearch {
     }
 
 
-    public static List<String> findPath(String c1, String c2, int maxDistance, EdgeMode edgeMode, DBPediaProperty useProperty) {
+    public List<String> findPath(String c1, String c2, int maxDistance, EdgeMode edgeMode, DBPediaProperty useProperty) {
 
         Set<String> sources;
         Set<String> targets = new HashSet<>();
@@ -259,11 +285,11 @@ public class BfsSearch {
         return path;
     }
 
-    public static int getDistance(String c1, String c2, int maxDistance, EdgeMode edgeMode, DBPediaProperty dbPediaProperty) {
+    public int getDistance(String c1, String c2, int maxDistance, EdgeMode edgeMode, DBPediaProperty dbPediaProperty) {
         return findPath(c1, c2, maxDistance, edgeMode, dbPediaProperty).size() - 1;
     }
 
-    public static double getSimilarity(String c1, String c2, DBPediaProperty dbPediaProperty) {
+    public double getSimilarity(String c1, String c2, DBPediaProperty dbPediaProperty) {
         int distance = 0;
         if (dbPediaProperty == DBPediaProperty.BROADER) {
             distance = getDistance(c1, c2, Configuration.MAX_PATH_LENGTH_CATEGORY, Configuration.EDGE_MODE, DBPediaProperty.BROADER);

@@ -5,6 +5,7 @@ import de.uop.mics.bayerl.cube.similarity.hierarchies.dbpedia.DBPediaService;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -13,27 +14,104 @@ import java.util.stream.Stream;
  */
 public class WordSimHelper {
 
-    private final static String PATH = "/Users/sebastianbayerl/Desktop/work/data/wordsim353/wordsim353/combined.csv";
+    private final static String FOLDER = "wordsim353/";
+    private final static String PATH_INPUT = FOLDER + "combined.csv";
+    private final static String PATH_DISAMBIGUATION = FOLDER + "wordSimConcepts.csv";
+    public final static String PATH_TARGET = FOLDER + "wordSimEnriched.csv";
     private final static String WIKI_PREFIX = "https://en.wikipedia.org/wiki/";
+    private final static String DBPEDIA_PREFIX = "http://dbpedia.org/resource/";
 
 
     public static void main(String[] args) {
-
-
-        help();
-
+        //printAsHtml();
+        //healthCheck();
+        createDataset();
     }
 
 
+    private static void createDataset() {
+        // load concepts
+        Map<String, String> concepts = new HashMap<>();
+        try {
+            Files.lines(Paths.get(PATH_DISAMBIGUATION)).forEach(s -> {
+                String[] splits = s.split(",");
+                String c1 = splits[0].trim().replace(WIKI_PREFIX, "");
+                if (splits.length == 2) {
+                    String c2 = splits[1].trim().replace(WIKI_PREFIX, "");
+                    concepts.put(c1.toLowerCase(), c2);
+                } else {
+                    concepts.put(c1.toLowerCase(), c1);
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-    private static void help() {
+        // enrich dataset
+        List<String> lines = new ArrayList<>();
+        try {
+            try (Stream<String> stream = Files.lines(Paths.get(PATH_INPUT))) {
+                stream.forEach(w -> {
+                    String[] splits = w.split(",");
+                    String w1 = splits[0];
+                    String w2 = splits[1];
+                    String c1 = concepts.getOrDefault(w1.toLowerCase(), w1);
+                    String c2 = concepts.getOrDefault(w2.toLowerCase(), w2);
+                    String line = w + "," + c1 + "," + c2 + "\n";
+                    lines.add(line);
+                });
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        // write dataset
+        try {
+            Files.deleteIfExists(Paths.get(PATH_TARGET));
+            Files.createFile(Paths.get(PATH_TARGET));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        for (String line : lines) {
+            try {
+                Files.write(Paths.get(PATH_TARGET), line.getBytes(), StandardOpenOption.APPEND);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static void healthCheck() {
+        try {
+            Files.lines(Paths.get(PATH_DISAMBIGUATION)).forEach(s -> {
+                String[] splits = s.split(",");
+
+                String concept = splits[0];
+                if (splits.length == 2) {
+                    concept = splits[1];
+                }
+
+                concept = concept.trim();
+                concept = concept.replace(WIKI_PREFIX, DBPEDIA_PREFIX);
+
+                if (DBPediaService.getCategories(concept).size() == 0) {
+                    System.out.println("no cat: " + concept);
+
+                }
+
+
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void printAsHtml() {
         Set<String> words = new HashSet<>();
 
         try {
-
-            try (Stream<String> stream = Files.lines(Paths.get(PATH))) {
-                stream.skip(1).forEach(w -> {
+            try (Stream<String> stream = Files.lines(Paths.get(PATH_INPUT))) {
+                stream.forEach(w -> {
                     String[] splits = w.split(",");
                     words.add(splits[0]);
                     words.add(splits[1]);
@@ -43,40 +121,26 @@ public class WordSimHelper {
             e.printStackTrace();
         }
 
-
-
         List<String> wordList = new ArrayList<>(words);
         Collections.sort(wordList);
-
-
-//        System.out.println(wordList.size());
-//        wordList.forEach(System.out::println);
 
         List<String> urls = new ArrayList<>();
         for (String s : wordList) {
             String first = String.valueOf(s.charAt(0));
-
             String upper = first.toUpperCase();
-
             urls.add(WIKI_PREFIX + upper + s.substring(1));
-
-
         }
 
-//        StringBuilder sb = new StringBuilder();
-//        sb.append("<!DOCTYPE html> <html><body><ol>");
-//
-//        for (String url : urls) {
-//            sb.append("<li><a href=\"" + url + "\">" + url.replace(WIKI_PREFIX, "") + "</a></li>");
-//        }
-//
-//        sb.append("</ol></body></html>");
-//
-//        System.out.println(sb.toString());
+        StringBuilder sb = new StringBuilder();
+        sb.append("<!DOCTYPE html> <html><body><ol>");
 
+        for (String url : urls) {
+            sb.append("<li><a href=\"" + url + "\">" + url.replace(WIKI_PREFIX, "") + "</a></li>");
+        }
 
-        System.out.println(DBPediaService.getCategories("http://dbpedia.org/resource/American"));
+        sb.append("</ol></body></html>");
 
+        System.out.println(sb.toString());
     }
 
 

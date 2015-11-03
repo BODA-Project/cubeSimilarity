@@ -25,6 +25,6 @@ public class BfsSimilarity extends ComputeComponentSimilarity {
         String c1 = co1.getConcept();
         String c2 = co2.getConcept();
 
-        return BfsSearch.getSimilarity(c1, c2, dbPediaProperty);
+        return BfsSearch.getInstance().getSimilarity(c1, c2, dbPediaProperty);
     }
 }

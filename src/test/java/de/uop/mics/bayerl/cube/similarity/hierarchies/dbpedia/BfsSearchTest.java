@@ -21,7 +21,7 @@ public class BfsSearchTest {
         String c1 = "http://dbpedia.org/resource/Futurama";
         String c2 = "http://dbpedia.org/resource/Lucille_Lortel_Awards";
 
-        System.out.println(BfsSearch.findPath(c1, c2, 10, EdgeMode.BOTH, DBPediaProperty.BROADER));
+        System.out.println(BfsSearch.getInstance().findPath(c1, c2, 10, EdgeMode.BOTH, DBPediaProperty.BROADER));
 
     }
 
@@ -38,7 +38,7 @@ public class BfsSearchTest {
 //        String c2 = "http://dbpedia.org/resource/Low_comedy";
         String c2 = "http://dbpedia.org/resource/Screenwriting";
 
-        List<String> path = BfsSearch.findPath(c1, c2, 10, EdgeMode.BOTH, DBPediaProperty.BROADER);
+        List<String> path = BfsSearch.getInstance().findPath(c1, c2, 10, EdgeMode.BOTH, DBPediaProperty.BROADER);
         System.out.println("Path: ");
         System.out.println(path);
         BFSContext.getPathContext(path, false);

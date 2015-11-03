@@ -3,7 +3,7 @@ package de.uop.mics.bayerl.cube.rest;
 
 import de.uop.mics.bayerl.cube.model.Cube;
 import de.uop.mics.bayerl.cube.rest.repository.CubeRepository;
-import de.uop.mics.bayerl.cube.rest.service.CubeService;
+import de.uop.mics.bayerl.cube.rest.service.SimilarityService;
 import de.uop.mics.bayerl.cube.similarity.MatrixAggregation;
 import de.uop.mics.bayerl.cube.similarity.Metric;
 import de.uop.mics.bayerl.cube.similarity.RankingItem;
@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class Controller {
 
     @Autowired
-    private CubeService cubeService;
+    private SimilarityService similarityService;
 
     @Autowired
     private CubeRepository cubeRepository;
@@ -63,7 +63,7 @@ public class Controller {
     public List<RankingItem> getRanking(@PathVariable String id, @RequestParam String matrixAggr, @RequestParam(value="metric")  String metric) {
         Stopwatch sw = Stopwatch.createStarted();
         System.out.println("Start ranking: " + metric + " " + matrixAggr);
-        List<RankingItem> rankingItems = cubeService.computeRanking(id, metric, matrixAggr);
+        List<RankingItem> rankingItems = similarityService.computeRanking(id, metric, matrixAggr);
         System.out.println("Done ranking: " + sw.elapsed(TimeUnit.SECONDS) + " [s]");
 
         return rankingItems;
@@ -76,7 +76,7 @@ public class Controller {
                                              @RequestParam(required = false) String testset) {
         Stopwatch sw = Stopwatch.createStarted();
         System.out.println("Start similarity: " + metric + " " + matrixAggr);
-        RankingItem rankingItem = cubeService.computeSimilarity(id, secondCube, metric, matrixAggr);
+        RankingItem rankingItem = similarityService.computeSimilarity(id, secondCube, metric, matrixAggr);
         System.out.println("Done similarity: " + sw.elapsed(TimeUnit.SECONDS) + " [s]");
         return rankingItem;
     }
@@ -97,5 +97,4 @@ public class Controller {
         return result;
     }
 
-    // TODO get path for visualization
 }

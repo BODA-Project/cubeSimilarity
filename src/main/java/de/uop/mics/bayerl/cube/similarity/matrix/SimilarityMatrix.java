@@ -7,10 +7,8 @@ public class SimilarityMatrix {
 
     // TODO make sure that rows >= cols
     private double[][] matrix;
-
     private int[] mapping;
     private double similarity;
-
 
     public SimilarityMatrix(int rows, int cols) {
         matrix = new double[rows][cols];
