@@ -10,7 +10,10 @@ import de.uop.mics.bayerl.cube.similarity.matrix.ComputeComponentSimilarity;
 import de.uop.mics.bayerl.cube.similarity.matrix.SimilarityMatrix;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -66,13 +69,18 @@ public class Evaluation {
             e.printStackTrace();
         }
 
-        for (RankingItem ranking : rankings) {
-            String line = ranking.getSourceId() + "," + ranking.getTargetId() + "," + ranking.getSimilarityMatrix().getSimilarity() + "\n";
-            try {
-                Files.write(Paths.get(currentFile), line.getBytes(), StandardOpenOption.APPEND);
-            } catch (IOException e) {
-                e.printStackTrace();
+        try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(currentFile, true)))) {
+            for (RankingItem ranking : rankings) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(ranking.getSourceId());
+                sb.append(",");
+                sb.append(ranking.getTargetId());
+                sb.append(",");
+                sb.append(ranking.getSimilarityMatrix().getSimilarity());
+                out.println(sb.toString());
             }
+        }catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
