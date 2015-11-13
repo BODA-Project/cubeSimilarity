@@ -27,6 +27,84 @@ public class BFSContext {
 
     private static final int BFS_DEPTH = 2;
 
+
+    public static String getPathGraph(List<List<String>> paths) {
+        // TODO mark nodes on shortest path
+        String spacer = "<######>";
+        Set<String> allNodes = new HashSet<>();
+        Set<String> allEdges = new HashSet<>();
+
+        for (List<String> path : paths) {
+            allNodes.addAll(path);
+            for (int i = 0; i < path.size() - 1; i++) {
+                allEdges.add(path.get(i) + spacer + path.get(i + 1));
+            }
+        }
+
+        // get nodes on shortest paths
+        int shortest = 100;
+        for (List<String> path : paths) {
+            shortest = Math.min(shortest, path.size());
+        }
+
+        Set<String> shortestPathNodes = new HashSet<>();
+        for (List<String> path : paths) {
+            if (path.size() == shortest) {
+                shortestPathNodes.addAll(path);
+            }
+        }
+
+        List<String> allNodesList = new ArrayList<>();
+        allNodesList.addAll(allNodes);
+
+        Graph graph = new Graph();
+        Node[] nodes = new Node[allNodesList.size()];
+        graph.setNodes(nodes);
+        for (int i = 0; i < allNodesList.size(); i++) {
+            String node = allNodesList.get(i);
+            Node n = new Node();
+            nodes[i] = n;
+
+            String name = node.replace("http://dbpedia.org/resource/", "dbp:").replace("dbp:Category:", "");
+            n.setName(name);
+            if (name.startsWith("dbp:")) {
+                n.setGroup(NODE_GRP_ITEM);
+            } else if (shortestPathNodes.contains(node)) {
+                n.setGroup(NODE_GRP_PATH);
+            } else {
+                n.setGroup(NODE_GRP);
+            }
+        }
+
+        Map<String, Integer> nodePosition = new HashMap<>();
+
+        for (int i = 0; i < allNodesList.size(); i++) {
+            nodePosition.put(allNodesList.get(i), i);
+        }
+
+
+        List<String> allEdgesList = new ArrayList<>();
+        allEdgesList.addAll(allEdges);
+
+        Link[] links = new Link[allEdges.size()];
+        graph.setLinks(links);
+        for (int i = 0; i < allEdgesList.size(); i++) {
+            String edge = allEdgesList.get(i);
+            String[] splits = edge.split(spacer);
+            String s = splits[0];
+            String t = splits[1];
+
+            Link link = new Link();
+            links[i] = link;
+            link.setSource(nodePosition.get(s));
+            link.setTarget(nodePosition.get(t));
+            link.setValue(LINK_VAL);
+        }
+
+        return toJson(graph);
+    }
+
+
     public static String getPathContext(List<String> p, boolean includeLeafs) {
         List<String> path = new ArrayList<>();
 
@@ -151,6 +229,10 @@ public class BFSContext {
             graph = reduceGraph(graph);
         }
 
+        return toJson(graph);
+    }
+
+    private static String toJson(Graph graph) {
         ObjectMapper mapper = new ObjectMapper();
         String output = "error";
         try {

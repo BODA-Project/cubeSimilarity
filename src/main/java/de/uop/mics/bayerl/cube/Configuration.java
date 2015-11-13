@@ -15,7 +15,7 @@ public class Configuration {
     public static double similarity_base = 0.8;
     public static int COMMON_CONCEPT_MAX_DISTANCE = 5;
     public static int MAX_PATH_LENGTH_CATEGORY = 5;
-    public static int MAX_PATH_LENGTH_PAGELINK = 5;
+    public static int MAX_PATH_LENGTH_PAGELINK = 3;
     public static EdgeMode EDGE_MODE = EdgeMode.BOTH;
     public static DBPediaProperty dbPediaProperty = DBPediaProperty.BROADER;
 }

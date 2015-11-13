@@ -1,12 +1,13 @@
-package de.uop.mics.bayerl.cube.similarity.hierarchies.dbpedia;
+package de.uop.mics.bayerl.cube.w2v;
 
+import de.uop.mics.bayerl.cube.similarity.hierarchies.dbpedia.BfsSearch;
+import de.uop.mics.bayerl.cube.similarity.hierarchies.dbpedia.DBPediaService;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -21,12 +22,12 @@ public class DBPediaCategoryW2V {
     private final static String PREFIX = "http://dbpedia.org/resource/Category:";
 
     private final static String CURRENT_MAP_FILE = FILE_MAP_BOTH;
-    private final static int PATHS = 100_000_000;
-    private final static int PATH_LENGTH = 15;
+    private final static int PATHS = 300_000;
+    private final static int PATH_LENGTH = 100;
 
     public static void main(String[] args) {
-        //writeMap();
-        //healthCheck();
+//        writeMap();
+//        healthCheck();
         generateDataset();
     }
 
@@ -85,6 +86,7 @@ public class DBPediaCategoryW2V {
             }
 
             List<String> path = new ArrayList<>();
+            // TODO iterate every key and pick it as an starting point?
             String current = pickRandom(keys);
             visited.put(current, visited.get(current) + 1);
             path.add(current);
@@ -107,7 +109,7 @@ public class DBPediaCategoryW2V {
             sb.append("\n");
             temp++;
 
-            if (temp == 500_000) {
+            if (temp == 10_000) {
                 System.out.println("write");
                 temp = 0;
                 try {

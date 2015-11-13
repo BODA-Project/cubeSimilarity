@@ -14,12 +14,19 @@ import java.util.*;
  */
 public class WordSimilarityProvider {
 
-    public static List<Cube> getCubes() {
+    public static List<Cube> getWordSimCubes() {
+        return getCubes(WordSimHelper.PATH_TARGET);
+    }
 
+    public static List<Cube> getMovieCubes() {
+        return getCubes(WordSimHelper.PATH_TARGET_MOVIES);
+    }
+
+    private static List<Cube> getCubes(String file) {
         List<Cube> cubes = new ArrayList<>();
         Set<String> keys = new HashSet<>();
         try {
-            Files.lines(Paths.get(WordSimHelper.PATH_TARGET)).forEach(s -> {
+            Files.lines(Paths.get(file)).forEach(s -> {
                 String[] splits = s.split(",");
                 String l1 = splits[0];
                 String l2 = splits[1];

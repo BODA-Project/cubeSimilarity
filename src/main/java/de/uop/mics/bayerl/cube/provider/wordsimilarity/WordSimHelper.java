@@ -14,26 +14,32 @@ import java.util.stream.Stream;
  */
 public class WordSimHelper {
 
-    private final static String FOLDER = "wordsim353/";
+    public final static String FOLDER = "wordsim353/";
     private final static String PATH_INPUT = FOLDER + "combined.csv";
     private final static String PATH_DISAMBIGUATION = FOLDER + "wordSimConcepts.csv";
     public final static String PATH_TARGET = FOLDER + "wordSimEnriched.csv";
+
+    public final static String FOLDER_MOVIES = "movies/";
+    private final static String PATH_INPUT_MOVIES = FOLDER_MOVIES + "movies-truth.csv";
+    private final static String PATH_DISAMBIGUATION_MOVIES = FOLDER_MOVIES + "movies-disambiguation.csv";
+    public final static String PATH_TARGET_MOVIES = FOLDER_MOVIES + "moviesEnriched.csv";
+
     private final static String WIKI_PREFIX = "https://en.wikipedia.org/wiki/";
-    private final static String DBPEDIA_PREFIX = "http://dbpedia.org/resource/";
+    public final static String DBPEDIA_PREFIX = "http://dbpedia.org/resource/";
 
 
     public static void main(String[] args) {
-        //printAsHtml();
-        //healthCheck();
-        createDataset();
+//        printAsHtml();
+//        healthCheck();
+        createDataset(PATH_DISAMBIGUATION_MOVIES, PATH_INPUT_MOVIES, PATH_TARGET_MOVIES);
     }
 
 
-    private static void createDataset() {
+    private static void createDataset(String disambiguation, String input, String target) {
         // load concepts
         Map<String, String> concepts = new HashMap<>();
         try {
-            Files.lines(Paths.get(PATH_DISAMBIGUATION)).forEach(s -> {
+            Files.lines(Paths.get(disambiguation)).forEach(s -> {
                 String[] splits = s.split(",");
                 String c1 = splits[0].trim().replace(WIKI_PREFIX, "");
                 if (splits.length == 2) {
@@ -50,7 +56,7 @@ public class WordSimHelper {
         // enrich dataset
         List<String> lines = new ArrayList<>();
         try {
-            try (Stream<String> stream = Files.lines(Paths.get(PATH_INPUT))) {
+            try (Stream<String> stream = Files.lines(Paths.get(input))) {
                 stream.forEach(w -> {
                     String[] splits = w.split(",");
                     String w1 = splits[0];
@@ -67,23 +73,23 @@ public class WordSimHelper {
 
         // write dataset
         try {
-            Files.deleteIfExists(Paths.get(PATH_TARGET));
-            Files.createFile(Paths.get(PATH_TARGET));
+            Files.deleteIfExists(Paths.get(target));
+            Files.createFile(Paths.get(target));
         } catch (IOException e) {
             e.printStackTrace();
         }
         for (String line : lines) {
             try {
-                Files.write(Paths.get(PATH_TARGET), line.getBytes(), StandardOpenOption.APPEND);
+                Files.write(Paths.get(target), line.getBytes(), StandardOpenOption.APPEND);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private static void healthCheck() {
+    private static void healthCheck(String disambiguation) {
         try {
-            Files.lines(Paths.get(PATH_DISAMBIGUATION)).forEach(s -> {
+            Files.lines(Paths.get(disambiguation)).forEach(s -> {
                 String[] splits = s.split(",");
 
                 String concept = splits[0];
@@ -98,19 +104,17 @@ public class WordSimHelper {
                     System.out.println("no cat: " + concept);
 
                 }
-
-
             });
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static void printAsHtml() {
+    private static void printAsHtml(String input) {
         Set<String> words = new HashSet<>();
 
         try {
-            try (Stream<String> stream = Files.lines(Paths.get(PATH_INPUT))) {
+            try (Stream<String> stream = Files.lines(Paths.get(input))) {
                 stream.forEach(w -> {
                     String[] splits = w.split(",");
                     words.add(splits[0]);
