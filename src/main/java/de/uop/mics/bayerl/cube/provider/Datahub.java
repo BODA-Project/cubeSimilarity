@@ -44,7 +44,7 @@ public class Datahub {
 //        getAllDatasets();
 //        getDatasetsWithSparqlEndpoint();
 //        getEndpointsWithCubes();
-//        getCleanedEndpoints();
+        getCleanedEndpoints();
     }
 
     private static void getCleanedEndpoints() {
@@ -62,8 +62,6 @@ public class Datahub {
                 for (int i = 0; i < resources.length(); i++) {
                     JSONObject resource = resources.getJSONObject(i);
                     if (resource.getString("format").equals("api/sparql")) {
-
-
 
                         String url = resource.getString("url");
                         if (!endpoints.contains(url)) {
@@ -86,6 +84,8 @@ public class Datahub {
 
     }
 
+    private static int exceptionCount = 0;
+
     /**
      * Check if the given endpoint contains at least one DSD.
      *
@@ -96,13 +96,13 @@ public class Datahub {
         ParameterizedSparqlString prepareQuery = new ParameterizedSparqlString(GET_DSD);
         QueryEngineHTTP qeHTTP = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(endpoint, prepareQuery.toString());
         boolean result = false;
-
         qeHTTP.setTimeout(2000, 2000);
 
         try {
             ResultSet resultSet = qeHTTP.execSelect();
             result = resultSet.hasNext();
         } catch (Exception e) {
+            exceptionCount++;
             e.printStackTrace();
         }
         qeHTTP.close();
@@ -116,6 +116,7 @@ public class Datahub {
     public static void getEndpointsWithCubes() {
         String fileIn = FILE_DATASET_WITH_SPARQL;
         String fileOut = FILE_ENDPOINTS_WITH_CUBE;
+        exceptionCount = 0;
 
         saveCreateFile(fileOut);
 
@@ -140,6 +141,8 @@ public class Datahub {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        System.out.println("exceptions: " + exceptionCount);
     }
 
     /**
@@ -151,7 +154,11 @@ public class Datahub {
 
         saveCreateFile(fileOut);
 
+
         try {
+
+            System.out.println("with sparql endpoint: " + Files.lines(Paths.get(fileIn)).filter(s -> s.contains("\"format\": \"api/sparql\"")).count());
+
             Files.lines(Paths.get(fileIn)).filter(s -> s.contains("\"format\": \"api/sparql\"")).forEach(l -> {
                 try {
                     Files.write(Paths.get(fileOut), (l + "\n").getBytes(), StandardOpenOption.APPEND);

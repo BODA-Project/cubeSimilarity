@@ -38,8 +38,8 @@ public class SimilarityUtil {
             resultMatrix = MatrixUtil.useSimpleSimilarity(matrix, false);
         } else if (matrixAggr == MatrixAggregation.SIMPLE_NORMALIZE) {
             resultMatrix = MatrixUtil.useSimpleSimilarity(matrix, true);
-        } else if (matrixAggr == MatrixAggregation.HEURISTIC) {
-            resultMatrix = MatrixUtil.useHeuristicSimilarity(matrix);
+//        } else if (matrixAggr == MatrixAggregation.HEURISTIC) {
+//            resultMatrix = MatrixUtil.useHeuristicSimilarity(matrix);
         } else if (matrixAggr == MatrixAggregation.HUNGARIAN_ALGORITHM) {
             resultMatrix = MatrixUtil.useHungarianAlgorithm(matrix);
         } else if (matrixAggr == MatrixAggregation.WEIGHTED) {

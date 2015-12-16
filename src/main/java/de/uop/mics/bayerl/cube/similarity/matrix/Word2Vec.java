@@ -18,8 +18,7 @@ public class Word2Vec extends ComputeComponentSimilarity {
         String c1 = co1.getConcept();
         String c2 = co2.getConcept();
 
-        Word2VecService word2VecService = new Word2VecService();
-        word2VecService.getSimilarity(c1, c2, true);
+        Word2VecService word2VecService = Word2VecService.getInstance();
 
         return word2VecService.getSimilarity(c1, c2, true);
     }

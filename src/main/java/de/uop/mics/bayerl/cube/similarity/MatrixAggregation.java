@@ -5,5 +5,7 @@ package de.uop.mics.bayerl.cube.similarity;
  */
 public enum MatrixAggregation {
 
-    SIMPLE, SIMPLE_NORMALIZE, HEURISTIC, HUNGARIAN_ALGORITHM, WEIGHTED
+    SIMPLE, SIMPLE_NORMALIZE, HUNGARIAN_ALGORITHM, WEIGHTED
+
+    // HEURISTIC
 }
