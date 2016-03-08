@@ -43,9 +43,8 @@ public class QRelGenerator {
                 System.out.println(line);
             }
 
-
-
         }
+
         try {
             Files.write(Paths.get(FILE), lines, Charset.forName("UTF-8"));
         } catch (IOException e) {

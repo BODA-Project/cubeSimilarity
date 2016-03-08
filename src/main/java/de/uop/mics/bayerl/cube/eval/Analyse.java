@@ -30,7 +30,7 @@ public class Analyse {
         MatrixAggregation ma = MatrixAggregation.SIMPLE;
 
         String truthFilename = WordSimHelper.PATH_TARGET_MOVIES;
-        String currentFilename =  Evaluation.getCurrentFileName(Evaluation.FOLDER, m , ma);
+        String currentFilename =  Evaluation.getInstance().getCurrentFileName(Evaluation.FOLDER, m , ma);
 
 
         Map<String, Double> truth = extractMap(truthFilename);
@@ -47,7 +47,7 @@ public class Analyse {
     }
 
     private static void persist(Metric m, MatrixAggregation ma, Map<String, Double> truth, Map<String, Double> current) {
-        String targetFile = Evaluation.getCurrentFileName(FOLDER, m, ma);
+        String targetFile = Evaluation.getInstance().getCurrentFileName(FOLDER, m, ma);
         List<String> keys = new ArrayList<>(truth.keySet());
         Collections.sort(keys);
 

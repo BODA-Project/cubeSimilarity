@@ -1,0 +1,28 @@
+cef43d8c-0218-4845-9421-d27d2182f939  /  Australian Bureau of Statistics (ABS) Linked Data   /   http://abs.270a.info/sparql   /    abs-linked-data   257
+9f9b027e-138e-4f5c-9219-e1c1d2470b91  /  Australian Climate Observations Reference Network - Surface Air Temperature Dataset   /   http://lab.environment.data.gov.au/sparql   /    acorn-sat   4
+b09d4dbc-9985-4285-8c4d-db3a4bffa081  /  AMOn+: Cultural Variations in Interpersonal Communication Ontology   /   http://imash.leeds.ac.uk:8080/openrdf-workbench/repositories/AMOnSPARQL/   /    amon   0
+e0f1791f-6508-482f-a9cc-fc94772e61d8  /  ATC publikovaná SÚKL   /   http://linked.opendata.cz/sparql   /    atc-publikovan--s-kl   37
+af8d6c91-a959-4387-a1bc-40ce44b9500f  /  Bank for International Settlements (BIS) Linked Data   /   http://bis.270a.info/sparql   /    bis-linked-data   6
+bbd59a22-6671-4191-bc85-a66dbcbcc47d  /  OpenUpLabs COINS   /   http://gov.tso.co.uk/coins/sparql   /    coins-openuplabs   1
+7abad5e6-29ed-4061-abab-4cd9232d1220  /  European Central Bank (ECB) Linked Data   /   http://ecb.270a.info/sparql   /    ecb-linked-data   46
+cdf9509f-1524-4edf-91ae-0b1ff2f2a983  /  Environment Agency Bathing Water Quality   /   http://environment.data.gov.uk/sparql/bwq/query   /    environment-agency-bathing-water-quality   3
+cdd1863d-9795-49fc-88a8-0684b3519834  /  EARTh   /   http://linkeddata.ge.imati.cnr.it:8890/sparql   /    environmental-applications-reference-thesaurus   2
+088386ce-8d1f-4a17-ab55-39f94af5e360  /  Food and Agriculture Organization of the United Nations (FAO) Linked Data   /   http://fao.270a.info/sparql   /    fao-linked-data   5
+1862b26d-7170-4d91-aa36-bec873ae803e  /  Federal Reserve Board (FRB) Linked Data   /   http://frb.270a.info/sparql   /    frb-linked-data   49
+ade5000f-569d-42d0-9409-fc377aeeb6d1  /  International Monetary Fund (IMF) Linked Data   /   http://imf.270a.info/sparql   /    imf-linked-data   4
+a0e8106b-7e5f-41ee-83b2-cb32071ea4af  /  LinkedSpending: OpenSpending becomes Linked Open Data   /   http://linkedspending.aksw.org/sparql   /    linkedspending   957
+8534c64e-cff5-4ad1-b899-2bc374801d21  /  Ocean Drilling - Codices   /   http://data.oceandrilling.org/sparql   /    oceandrilling-codices   3
+c286d994-4430-442e-9f4a-b4bbd6c5f57b  /  Organisation for Economic Co-operation and Development (OECD) Linked Data   /   http://oecd.270a.info/sparql   /    oecd-linked-data   140
+ad90e135-0257-4b7f-b6c2-af5ffc875ee7  /  OpenLink Software LOD Cache   /   http://lod.openlinksw.com/sparql   /    openlink-lod-cache   33
+8adc72d2-755e-4dee-afe4-80c082de8a91  /  reference.data.gov.uk   /   http://services.data.gov.uk/reference/sparql   /    reference-data-gov-uk   1
+41932b18-c99e-4014-8709-c19508bc6a54  /  Statistics on Fatal Traffic Accidents in greek roads   /   http://crashmap.okfn.gr:8890/sparql   /    statistics-on-fatal-traffic-accidents-in-greek-roads   4
+ca2f6efe-a871-454e-a923-db6675becbfa  /  The Eurostat Linked Data   /   http://eurostat.linked-statistics.org/sparql   /    the-eurostat-linked-data   5068
+83e0b0e8-2a35-46c7-90f2-9f634c019e04  /  Transparency International Linked Data   /   http://transparency.270a.info/sparql   /    transparency-linked-data   6
+c33f85e8-ef31-493c-b538-bec7b52a432b  /  UNESCO Institute for Statistics (UIS) Linked Data   /   http://uis.270a.info/sparql   /    uis-linked-data   5
+35abf2c2-894a-4269-9729-6803dcb835e3  /  UNISTAT-KIS 2011/2012 in RDF (Key Information Set - UK Universities)   /   http://data.linkedu.eu/kis1112/query   /    unistat-kis-2011-2012-in-rdf-key-information-set-uk-universities   2
+81521f76-857b-401b-a58a-ce9922318bf0  /  UNISTAT-KIS 2011/2012 in RDF (Key Information Set - UK Universities)   /   http://data.linkedu.eu/kis1112/query   /    unistat-kis-2011-2012-in-rdf-key-information-set-uk-universities   2
+b1d60135-5cab-48e4-99dd-a752fca1aafd  /  UNISTAT-KIS in RDF (Key Information Set - UK Universities)   /   http://data.linkedu.eu/kis/query   /    unistat-kis-in-rdf-key-information-set-uk-universities   11
+0742986b-3b25-4896-98c5-975ab35291a8  /  URIBurner   /   http://linkeddata.uriburner.com/sparql   /    uriburner   1
+51f88468-9934-4401-b524-fbb53ff8366e  /  USAGE review corpus   /   http://data.lider-project.eu/usage/sparql   /    usage-review-corpus   0
+a06356cc-1356-417f-bc80-8db05fc66404  /  World Bank Linked Data   /   http://worldbank.270a.info/sparql   /    world-bank-linked-data   59
+899e3f63-e9ee-4cf3-97b4-e32647d45b36  /  World War 1 as Linked Open Data   /   http://ldf.fi/ww1lod/sparql   /    ww1lod   1

@@ -16,7 +16,7 @@ public class Word2VecService {
 
     private final static String ENDPOINT = "http://theseus.dimis.fim.uni-passau.de:80/Word2VecRest/w2vsim";
     private final static String BODY_1 = "{\"data\":[\"";
-    private final static String BODY_2 = "\"]}";
+    private final static String BODY_2 = "\"], \"domain\":\"DBpedia\"}";
 
     private static Word2VecService word2VecService = null;
     private Map<String, Double> cache = new HashMap<>();

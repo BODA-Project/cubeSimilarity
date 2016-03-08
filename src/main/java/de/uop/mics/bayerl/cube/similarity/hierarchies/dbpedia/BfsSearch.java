@@ -452,6 +452,7 @@ public class BfsSearch {
             return 0.0;
         }
 
+
         return Math.pow(Configuration.similarity_base, distance);
     }
 

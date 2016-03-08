@@ -18,7 +18,9 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -28,15 +30,25 @@ import java.util.stream.Collectors;
 public class Evaluation {
 
     public static void main(String[] args) {
-        evaluateMetrics();
+        Evaluation.getInstance().evaluateMetrics();
     }
 
     private final static String TESTSET = "movies";
     public final static String FOLDER = "evaluation/raw/" + TESTSET + "/";
     private final static String FILE_PREFIX = "eval-matrices-" + TESTSET + "-";
     private final static String FILE_SUFFIX = ".csv";
+    private Map<String, SimilarityMatrix> cache = new HashMap<>();
 
-    public static void evaluateMetrics() {
+    private static Evaluation instance;
+
+    public static Evaluation getInstance() {
+        if (instance == null) {
+            instance = new Evaluation();
+        }
+        return instance;
+    }
+
+    public void evaluateMetrics() {
         List<Cube> cubes = WordSimilarityProvider.getMovieCubes();
         MatrixAggregation ma = MatrixAggregation.SIMPLE;
         for (Metric m : Metric.values()) {
@@ -60,11 +72,11 @@ public class Evaluation {
         }
     }
 
-    public static String getCurrentFileName(String folder, Metric m, MatrixAggregation ma) {
+    public String getCurrentFileName(String folder, Metric m, MatrixAggregation ma) {
         return folder + FILE_PREFIX +  m.name().toLowerCase() + "-" + ma.name().toLowerCase() + FILE_SUFFIX;
     }
 
-    private static void persistResult(List<RankingItem> rankings, Metric m, MatrixAggregation ma) {
+    private void persistResult(List<RankingItem> rankings, Metric m, MatrixAggregation ma) {
 
         String currentFile = getCurrentFileName(FOLDER, m , ma);
 
@@ -90,15 +102,23 @@ public class Evaluation {
         }
     }
 
-    public static List<RankingItem> getRanking(Cube c1, List<Cube> cubes, Metric m, MatrixAggregation ma) {
+    public List<RankingItem> getRanking(Cube c1, List<Cube> cubes, Metric m, MatrixAggregation ma) {
         return cubes.stream().map(c2 -> getSimilarity(c1, c2, m, ma)).collect(Collectors.toList());
     }
 
 
-    public static RankingItem getSimilarity(Cube c1, Cube c2, Metric m, MatrixAggregation ma) {
-        //System.out.println("getSim " + c1.getId() +  "   " + c2.getId());
+    public RankingItem getSimilarity(Cube c1, Cube c2, Metric m, MatrixAggregation ma) {
+        // System.out.println("getSim " + c1.getId() +  "   " + c2.getId());
         ComputeComponentSimilarity computeComponentSimilarity = SimilarityUtil.getAlgorithmForMetric(m);
-        SimilarityMatrix matrix = computeComponentSimilarity.computeMatrix(c1, c2);
+        // TODO caching possible here?
+
+
+        String key = c1.getId() + c2.getId() + m.name();
+        if (!cache.containsKey(key)) {
+            cache.put(key, computeComponentSimilarity.computeMatrix(c1, c2));
+        }
+
+        SimilarityMatrix matrix = cache.get(key);
         SimilarityMatrix resultMatrix = SimilarityUtil.doMatrixAggregation(ma, matrix);
 
         RankingItem ra = new RankingItem();

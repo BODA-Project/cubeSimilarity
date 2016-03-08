@@ -3,6 +3,7 @@ package de.uop.mics.bayerl.cube.eval;
 import de.uop.mics.bayerl.cube.model.Cube;
 import de.uop.mics.bayerl.cube.model.Dimension;
 import de.uop.mics.bayerl.cube.model.Measure;
+import de.uop.mics.bayerl.cube.provider.ReichstatisticsGroupedCubes;
 import de.uop.mics.bayerl.cube.provider.datahub.DatahubCubes;
 import de.uop.mics.bayerl.cube.similarity.MatrixAggregation;
 import de.uop.mics.bayerl.cube.similarity.Metric;
@@ -18,6 +19,47 @@ public class EvaluateDatahub {
 
     public static void main(String[] args) {
         evaluate();
+    }
+
+
+    private static void evaluateVsGerman() {
+        String id = "g1-c8";
+
+        List<Cube> cubes = ReichstatisticsGroupedCubes.loadCubes();
+        Cube query = null;
+        for (Cube cube : cubes) {
+            if (cube.getId().equals(id)) {
+                query = cube;
+                break;
+            }
+
+        }
+
+
+        List<Cube> targets = DatahubCubes.readCubes();
+        List<RankingItem> ranking = Evaluation.getInstance().getRanking(query, targets, Metric.LABEL_SIMILARITY, MatrixAggregation.SIMPLE);
+
+        ranking.sort((r1, r2) -> Double.compare(r1.getSimilarityMatrix().getSimilarity(), r2.getSimilarityMatrix().getSimilarity()));
+        Collections.reverse(ranking);
+
+//        for (RankingItem rankingItem : ranking) {
+//            System.out.println(rankingItem.getSimilarityMatrix().getSimilarity() + "    " + rankingItem.getSourceId() + "   " + rankingItem.getTargetId());
+//        }
+
+
+        System.out.println(ranking.size());
+        ranking = ranking.subList(0, 10);
+
+        for (RankingItem rankingItem : ranking) {
+            for (Cube cube : targets) {
+                if (cube.getId().equals(rankingItem.getTargetId())) {
+                    System.out.println(rankingItem.getSimilarityMatrix().getSimilarity() + "    " + rankingItem.getSourceId() + "   " + rankingItem.getTargetId());
+                    printCube(cube);
+                    System.out.println("-------------------");
+                }
+            }
+        }
+
     }
 
 
@@ -49,7 +91,7 @@ public class EvaluateDatahub {
         String endpoint = query.getSparqlEndpoint().getEndpoint();
 
 
-        List<RankingItem> ranking = Evaluation.getRanking(query, cubes, Metric.CONCEPT_EQUALITY, MatrixAggregation.WEIGHTED);
+        List<RankingItem> ranking = Evaluation.getInstance().getRanking(query, cubes, Metric.CONCEPT_EQUALITY, MatrixAggregation.WEIGHTED);
 
         // sort ranking
         ranking.sort((r1, r2) -> Double.compare(r1.getSimilarityMatrix().getSimilarity(), r2.getSimilarityMatrix().getSimilarity()));
@@ -77,7 +119,7 @@ public class EvaluateDatahub {
 
 
     private final static void printCube(Cube cube) {
-        System.out.println(cube.getId() + "  " + cube.getSparqlEndpoint().getEndpoint());
+        System.out.println(cube.getId() + "  " + cube.getSparqlEndpoint().getEndpoint() + "  " + cube.getStructureDefinition().getConcept());
 
         for (Dimension dimension : cube.getStructureDefinition().getDimensions()) {
             System.out.println(dimension.getConcept() + "   " + dimension.getLabel());

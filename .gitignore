@@ -17,3 +17,10 @@ hs_err_pid*
 .idea
 target
 CubeSimilarity.iml
+corpus_categories-target
+corpus_categories-target.syn0.npy
+corpus_categories-target.syn1.npy
+oldDatahub/0-all-datasets.txt
+oldDatahub/1-dataset-sparql.txt
+oldDatahub/2-endpoints-cubes.txt
+oldDatahub/3-endpoints-cubes-cleaned.txt
