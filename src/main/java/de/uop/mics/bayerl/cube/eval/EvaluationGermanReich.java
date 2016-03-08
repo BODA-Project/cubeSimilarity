@@ -117,11 +117,9 @@ public class EvaluationGermanReich {
 //                    Collections.reverse(ranking);
 //                    ranking.remove(0);
 
+
+                    // filter self comparison
                     ranking.stream().filter(item -> !item.getSourceId().equals(item.getTargetId()));
-
-
-
-
 
 
 
