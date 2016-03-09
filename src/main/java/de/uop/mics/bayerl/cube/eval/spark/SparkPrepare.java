@@ -13,17 +13,32 @@ import java.util.*;
 public class SparkPrepare {
 
     private static final String INPUT = "eval";
-    protected static final String TARGET = "spark/input_multi.txt";
+    protected static final String TARGET = "spark/input.txt";
 
 
     public static void main(String[] args) {
-
         prepare();
-
-
     }
 
     private static void prepare() {
+
+        if (Files.exists(Paths.get(TARGET))) {
+            try {
+                Files.delete(Paths.get(TARGET));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            Files.createFile(Paths.get(TARGET));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+
         long featureSize = 0;
         try {
             featureSize = Files.list(Paths.get(INPUT)).count();
@@ -46,7 +61,7 @@ public class SparkPrepare {
                 try {
                     Files.lines(file).forEach(line -> {
                         String[] splits = line.split(" ");
-                        String id = splits[0] + splits[2];
+                        String id = splits[0] + "#" + splits[2];
                         availableIds.add(id);
                         feature.put(id, Double.parseDouble(splits[4]));
                     });
@@ -62,7 +77,16 @@ public class SparkPrepare {
         List<String> lines = new ArrayList<>();
         availableIds.forEach(id -> {
             StringBuilder sb = new StringBuilder();
-            sb.append(id.substring(1, id.indexOf("-")));
+            String[] idSplits = id.split("#");
+
+            String group1 = idSplits[0].substring(1, id.indexOf("-"));
+            String group2 = idSplits[1].substring(1, id.indexOf("-"));
+
+            if (group1.equals(group2)) {
+                sb.append(1);
+            } else {
+                sb.append(0);
+            }
 
             for (int i = 0; i < finalFeatureSize; i++) {
                 sb.append(" ");
@@ -79,7 +103,7 @@ public class SparkPrepare {
 
 
         try {
-            Files.write(Paths.get(TARGET), lines, Charset.forName("UTF-8"), StandardOpenOption.CREATE);
+            Files.write(Paths.get(TARGET), lines, Charset.forName("UTF-8"), StandardOpenOption.WRITE);
         } catch (IOException e) {
             e.printStackTrace();
         }
