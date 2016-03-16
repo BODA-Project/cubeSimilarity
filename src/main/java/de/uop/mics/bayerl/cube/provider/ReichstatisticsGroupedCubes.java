@@ -5,6 +5,7 @@ import de.uop.mics.bayerl.cube.model.Dimension;
 import de.uop.mics.bayerl.cube.model.Measure;
 import de.uop.mics.bayerl.cube.provider.wordsimilarity.WordSimHelper;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -14,10 +15,9 @@ import java.util.stream.Collectors;
 /**
  * Created by sebastianbayerl on 15/12/15.
  */
-@SuppressWarnings("ALL")
 public class ReichstatisticsGroupedCubes {
 
-    private final static String FOLDER = "/Users/sebastianbayerl/Desktop/reichstatisticsCubes/";
+    private final static String FOLDER = "reichstatisticsInput" + File.separator;
     private final static String FILE = FOLDER + "reichstatisticsSampleDSD.txt";
     private static final String FILE_CONCEPTS = FOLDER + "reichstatisticsDisambiguation.txt";
 
@@ -44,14 +44,15 @@ public class ReichstatisticsGroupedCubes {
 
         System.out.println(cubes.size());
 
-//        for (String label : labels) {
-//            System.out.println(label);
-//        }
+        for (Cube cube : cubes) {
+            System.out.println(cube.getStructureDefinition().getMeasures().size());
+        }
 
     }
 
 
     public static List<Cube> loadCubes() {
+        Set<String> errorSet = new HashSet<>();
         List<Cube> cubes = new ArrayList<>();
         List<String> lines = new ArrayList<>();
         try {
@@ -83,6 +84,7 @@ public class ReichstatisticsGroupedCubes {
 
                     if (CONCEPTS.get(split) == null) {
                         System.out.println("error " + split);
+                        errorSet.add(split);
                     }
 
                     d.setConcept(CONCEPTS.get(split));
@@ -98,6 +100,7 @@ public class ReichstatisticsGroupedCubes {
 
                     if (CONCEPTS.get(split) == null) {
                         System.out.println("error " + split);
+                        errorSet.add(split);
                     }
 
                     m.setConcept(CONCEPTS.get(split));
@@ -107,6 +110,9 @@ public class ReichstatisticsGroupedCubes {
 
             i++;
         }
+
+
+        errorSet.forEach(System.out::println);
 
         return cubes;
     }
