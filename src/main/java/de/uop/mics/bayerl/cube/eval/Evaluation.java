@@ -37,7 +37,6 @@ public class Evaluation {
     public final static String FOLDER = "evaluation/raw/" + TESTSET + "/";
     private final static String FILE_PREFIX = "eval-matrices-" + TESTSET + "-";
     private final static String FILE_SUFFIX = ".csv";
-    private Map<String, SimilarityMatrix> cache = new HashMap<>();
 
     private static Evaluation instance;
 
@@ -110,15 +109,8 @@ public class Evaluation {
     public RankingItem getSimilarity(Cube c1, Cube c2, Metric m, MatrixAggregation ma) {
         // System.out.println("getSim " + c1.getId() +  "   " + c2.getId());
         ComputeComponentSimilarity computeComponentSimilarity = SimilarityUtil.getAlgorithmForMetric(m);
-        // TODO caching possible here?
 
-
-        String key = c1.getId() + c2.getId() + m.name();
-        if (!cache.containsKey(key)) {
-            cache.put(key, computeComponentSimilarity.computeMatrix(c1, c2));
-        }
-
-        SimilarityMatrix matrix = cache.get(key);
+        SimilarityMatrix matrix = computeComponentSimilarity.computeMatrix(c1, c2);
         SimilarityMatrix resultMatrix = SimilarityUtil.doMatrixAggregation(ma, matrix);
 
         RankingItem ra = new RankingItem();
