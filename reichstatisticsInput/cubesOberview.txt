@@ -1,0 +1,41 @@
+cubes overview
+
+01 Shipping in the german reich
+02 Products import/export
+03 Emigration
+04 Production
+05 indurstrial units
+
+
+06 Population 
+	table_1-drsa_570_0349_251.tei.html
+	table_30-drsa_570_0092_030.tei.html
+07 Eheschlieſsungen, Geburten und Sterbefälle im Deutschen Reiche im Jahre 1882. 
+	table_1-drsa_592_0822_10.tei.html
+	table_30-drsa_482_0796_14.tei.html
+08 Die Schiffsunfälle an der Deutschen Küste während des Jahres 1879.
+	table_36-drsa_440_0040_2.tei.html
+09 Voting in the German Reich
+	table_32-drsa_371_0636_040.tei.html
+10 Waterlevel
+	table_30-drsa_190_0348_162.tei.html
+	
+	
+10 Ernte
+	table_31-drsa_482_0148_10.tei.html
+
+	
+	
+08 Der Waarenhandel zwischen dem Deutschen Reiche und Russland in den Jahren 1872, 1873 und 1874.
+	table_2-drsa_200_0424_34-2.tei.html
+09 	Das Salz im Deutschen Zollgebiete für das Jahr 1875.
+	table_2-drsa_200_0610_50.tei.html
+10 Produktion und Besteuerung des Bieres im Deutschen Reiche während des Jahres 1876.
+	table_2-drsa_252_0226_016.tei.html
+11 Der Taback im Deutschen Zollgebiete, 1. Juli 1876 bis 30. Juni 1877.
+	table_2-drsa_252_0474_026.tei.html
+
+	
+
+month, state, region, alive, gender, legitimacy
+date, state, region, community, religion

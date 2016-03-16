@@ -1,0 +1,65 @@
+continent, Continent
+date, Calendar_date
+country , Country
+flag , Flag
+education, Education
+gender, Gender
+year, Year
+city, City
+homeland, Homeland
+goods and services, Goods_and_services
+origin , Paleoanthropology
+destination, Travel
+family status, Marital_status
+industry, Industry_classification
+good, Good_(economics)
+employee type, Employment
+manufacturer, Manufacturing
+week, Week
+loaded, Cargo
+maschinery type, Machine_(mechanical)
+state, State_(polity)
+day, Day
+direction, Export
+means of transportation, Transport
+ship type, Watercraft
+product, Product_(business)
+index, Lookup_table
+administrative region, Federated_state
+market, Market_(economics)
+month , Month
+nationality, Nationality
+port, Port
+region, Region
+cleared, Tax
+quarter, Calendar_year
+age, Birthday
+count tons, Quantity
+count, Quantity
+count units, Quantity
+count ships , Quantity
+count crew, Quantity
+count person, Quantity
+count value , Quantity
+count factories, Quantity
+electoral district, Electoral_district
+water level, Water_level
+watercraft, Watercraft
+political party, Political_party
+community, Community
+life, Life
+religion, Religion
+assurance, Assurance_services
+coast, Coast
+candidate, Candidate
+political spectrum, Political_spectrum
+tonnage, Tonnage
+legitimacy, Legitimacy_(family_law)
+name, Name
+location, Location_(geography)
+shipwrecking, Shipwrecking
+election law, Election_law
+validity, Validity
+river, River
+sea level, Sea_level
+percentage, Percentage

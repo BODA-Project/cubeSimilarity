@@ -1,0 +1,606 @@
+
+g1-c1
+Shipping in the german reich - ships, goods and crew
+group 1 - Shipping
+year, month, origin, direction, port, city, region, country, loaded 
+count ships, count tons, count crew
+
+g1-c2
+Shipping in the german reich - goods
+group 1 - Shipping
+year, month, origin, direction, port, city, region, country, loaded 
+count tons
+
+g1-c3
+Shipping in the german reich - crew
+group 1 - Shipping
+year, month, origin, direction, port, city, region, country, loaded
+count crew
+
+g1-c4
+Yearly shippings
+group 1 - Shipping
+year, month, origin, destination, city, region, loaded
+count ships 
+
+g1-c5
+Yearly shippings - ship details
+group 1 - Shipping
+year, month, origin, destination, city, region, loaded, ship type
+count ships
+
+g1-c6
+yearly shipping overview
+group 1 - Shipping
+year, quarter, port, city
+count ships
+
+g1-c7
+shipping in the year 1887
+group 1 - Shipping
+quarter, port, city
+count ships
+
+g1-c8
+shipping in 1886
+group 1 - Shipping
+quarter, port, city
+count ships
+
+g1-c9
+shipping overview loaded
+group 1 - Shipping
+year, port, ship type, loaded
+count ships
+
+g1-c10
+shipping overview
+group 1 - Shipping 
+year, month, origin, direction, country, loaded 
+count ships
+
+g2-c1
+Products import/export tons
+group 2 - Import and export of products
+index, product, good, region, city, manufacturer, year, quarter, direction
+count tons
+
+g2-c2
+Products import/export count quarter
+group 2 - Import and export of products
+index, product, good, region, city, manufacturer, year, quarter, direction
+count 
+
+g2-c3
+Products import/export count month
+group 2 - Import and export of products
+index, product, good, region, city, manufacturer, year, month, direction
+count 
+
+g2-c4
+Products import/export overview years
+group 2 - Import and export of products
+product, region, year
+count
+
+g2-c5
+Products import/export overview in 1887
+group 2 - Import and export of products
+index, product, region
+count
+
+g2-c6
+Products import/export overview in 1886
+group 2 - Import and export of products
+index, product, region
+count
+
+g2-c7
+Products import/export overview in 1885
+group 2 - Import and export of products
+index, product, region
+count
+
+g2-c8
+Products import/export overview country in 1887
+group 2 - Import and export of products
+index, product, country
+count
+
+g2-c9
+Products import/export overview in state 1887
+group 2 - Import and export of products
+index, product, state
+count
+
+g2-c10
+Products import/export overview per city
+group 2 - Import and export of products
+index, product, city, year
+count
+
+g2-c11
+Products import/export clearance status detail
+group 2 - Import and export of products
+index, product, good, region, city, manufacturer, year, quarter, cleared
+count
+
+g2-c12
+Products import/export clearance status
+group 2 - Import and export of products
+good, country, cleared
+count
+
+g3-c1
+Emigration high detail: personal data per day
+group 3 - Emigration
+homeland, nationality, age, gender, year, month, day, city, region, continent, means of transportation, flag
+count
+
+g3-c2
+Emigration high detail: per day
+group 3 - Emigration 
+homeland, nationality, year, month, day, city, region, continent, means of transportation, flag
+count
+
+g3-c3
+Emigration: personal data
+group 3 - Emigration
+homeland, nationality, age, gender, year, month, city, region, continent
+count
+
+g3-c4
+Emigration: person + month + city
+group 3 - Emigration
+age, gender, year, month, city, region, continent
+count
+
+g3-c5
+Emigration: per quarter
+group 3 - Emigration
+age, gender, quarter, city, region, continent
+count
+
+g3-c6
+Emigration: date
+group 3 - Emigration
+homeland, nationality, date, city, region, continent
+count
+
+g3-c7
+Emigration: per week
+group 3 - Emigration 
+homeland, nationality, year, week, city, region, continent
+count
+
+g3-c8
+Emigration: destination overview by city
+group 3 - Emigration
+city, region
+count
+
+g3-c9
+Emigration: Overview destination region by nationality and gender
+group 3 - Emigration
+homeland, nationality, region, continent, year, gender
+count
+
+g3-c10
+Emigration: Overview destination region by nationality
+group 3 - Emigration
+homeland, nationality, year, continent, region
+count
+
+g3-c11
+Emigration: destination overview by region
+group 3 - Emigration
+year, continent, region
+count
+
+g3-c12
+Emigration: destination overview by city in the year 1887
+group 3 - Emigration
+continent, region
+count
+
+g3-c13
+Emigration: destination overview by quarter in the year 1887
+group 3 - Emigration
+quarter, region
+count
+
+g3-c14
+Emigration: overview by transportation
+group 3 - Emigration
+year, city, region, continent, means of transportation, flag
+count
+
+g3-c15
+Emigration: ship overview
+group 3 - Emigration
+year, country, ship type, flag
+count
+
+g4-c1
+production: by factory
+group 4 - production of goods
+year, quarter, product, good, country, region, city
+count factories, count tons, count value
+
+g4-c2
+production: by good
+group 4 - production of goods
+year, quarter, good, country, region, city
+count tons, count value
+
+g4-c3
+production: by product
+group 4 - production of goods
+index, year, month, product, good, city
+count value
+
+g4-c4
+production: target market
+group 4 - production of goods
+year, week, product, market, country, region, city
+count value
+
+g4-c5
+production: goods per city overview 1887
+group 4 - production of goods
+goods and services, country, region, city
+count value
+
+g4-c6
+production: goods per city overview 1886
+group 4 - production of goods
+goods and services, country, region, city
+count value
+
+g4-c7
+production: goods per city overview 1885
+group 4 - production of goods
+goods and services, country, region, city
+count value
+
+g4-c8
+production: in tons
+group 4 - production of goods
+goods and services, market, year, month, week, region
+count tons
+
+g5-c1
+indurstrial units: employee statistics
+group 5 - indurstrial units
+year, month, industry, good, administrative region, city, gender, employee type
+count person
+
+g5-c2
+indurstrial units: employee statistics (personal data)
+group 5 - indurstrial units
+year, month, industry, good, administrative region, city, gender, family status, age, education, employee type
+count person
+
+g5-c3
+indurstrial units: count
+group 5 - indurstrial units
+year, month, industry, good, administrative region, city
+count units
+
+g5-c4
+indurstrial units: machinery statistics
+group 5 - indurstrial units
+year, month, industry, good, administrative region, city, maschinery type
+count
+
+g6-c1
+Population census - total count
+group 6 - Population census
+date, state, region, community
+count
+
+g6-c2
+Population census - Difference in percentage
+group 6 - Population census
+date, state, region, community
+percentage
+
+g6-c3
+Population census - Total count and difference in percentage
+group 6 - Population census
+date, state, region, community
+count, percentage
+
+g6-c4
+Population census - per month and state
+group 6 - Population census
+year, month, state
+count
+
+g6-c5
+Population census - by religion
+group 6 - Population census
+date, state, region, city, religion
+count
+
+g6-c6
+Population census - aggregated by religion total count
+group 6 - Population census
+year, state, region, religion
+count
+
+g6-c7
+Population census - aggregated by religion difference in percentage
+group 6 - Population census
+year, state, region, religion
+percentage
+
+g7-c1
+Childbirth in the German Reich - basic
+group7 - Childbirth in the German Reich
+year, month
+count
+
+g7-c2
+Childbirth in the German Reich - by gender
+group7 - Childbirth in the German Reich
+year, month, gender
+count
+
+g7-c3
+Childbirth in the German Reich - is alive?
+group7 - Childbirth in the German Reich
+year, month, life
+count
+
+g7-c4
+Childbirth in the German Reich - gender and is alive?
+group7 - Childbirth in the German Reich
+year, month, gender, life
+count
+
+g7-c5
+Childbirth in the German Reich - in the year 1880
+group7 - Childbirth in the German Reich
+month, gender
+count
+
+g7-c6
+Childbirth in the German Reich - in the year 1881
+group7 - Childbirth in the German Reich
+month, gender
+count
+
+g7-c7
+Childbirth in the German Reich - child legitimacy
+group7 - Childbirth in the German Reich
+year, month, gender, life, legitimacy
+count
+
+g7-c8
+Childbirth in the German Reich - legitimacy per region
+group7 - Childbirth in the German Reich
+year, month, region, gender, life, legitimacy
+count
+
+g7-c9
+Childbirth in the German Reich - per region
+group7 - Childbirth in the German Reich
+year, month, region, gender
+count
+
+g7-c9
+Childbirth in the German Reich - total difference in year 1881 compared to 1880
+group7 - Childbirth in the German Reich
+month, state, region, life, gender, legitimacy
+count
+
+g7-c10
+Childbirth in the German Reich - differencein percentage in year 1881 compared to 1880
+group7 - Childbirth in the German Reich
+month, state, region, life, gender, legitimacy
+percentage
+
+g8-c1
+Naval accidents at the german coast - overview
+group 8 - Naval accidents at the german coast
+date, location, coast, shipwrecking
+count
+
+g8-c2
+Naval accidents at the german coast - detail assurance
+group 8 - Naval accidents at the german coast
+date, location, coast, shipwrecking, name, assurance
+count
+
+g8-c3
+Naval accidents at the german coast - by nationality
+group 8 - Naval accidents at the german coast
+date, location, coast, shipwrecking, nationality
+count
+
+g8-c4
+Naval accidents at the german coast - by flag
+group 8 - Naval accidents at the german coast
+date, location, coast, shipwrecking, flag
+count
+
+g8-c5
+Naval accidents at the german coast - detail age
+group 8 - Naval accidents at the german coast
+date, location, coast, shipwrecking, name, nationality, age
+count
+
+g8-c6
+Naval accidents at the german coast - detail watercraft
+group 8 - Naval accidents at the german coast
+date, location, coast, shipwrecking, watercraft
+count
+
+g8-c7
+Naval accidents at the german coast - per year
+group 8 - Naval accidents at the german coast
+year, location, coast, shipwrecking, watercraft
+count
+
+g8-c8
+Naval accidents at the german coast - per month per port
+group 8 - Naval accidents at the german coast
+year, month, port, shipwrecking, watercraft
+count
+
+g8-c9
+Naval accidents at the german coast - year overview
+group 8 - Naval accidents at the german coast
+year, location, shipwrecking, watercraft
+count
+
+g8-c10
+Naval accidents at the german coast - tonnage
+group 8 - Naval accidents at the german coast
+year, location, shipwrecking, watercraft, tonnage
+count
+
+g8-c11
+Naval accidents at the german coast - detailed
+group 8 - Naval accidents at the german coast
+date, location, coast, shipwrecking, watercraft, name, assurance, age, nationality, tonnage
+count
+
+g8-c12
+Naval accidents at the german coast - in the year 1881
+group 8 - Naval accidents at the german coast
+month, location, coast, shipwrecking, watercraft, name, assurance, age, nationality, tonnage
+count
+
+g8-c13
+Naval accidents at the german coast - in the year 1881
+group 8 - Naval accidents at the german coast
+location, shipwrecking, watercraft
+count
+
+g8-c14
+Naval accidents at the german coast - crew
+group 8 - Naval accidents at the german coast
+date, location, coast, shipwrecking, watercraft, name, assurance, age, nationality, tonnage
+count
+
+g8-c15
+Naval accidents at the german coast - crew casualties
+group 8 - Naval accidents at the german coast
+date, location, coast, shipwrecking, watercraft, name, assurance, age, nationality, tonnage
+count
+
+g9-c1 
+Elections in the German Reich
+group 9 - Elections in the German Reich
+index, name, date, state, electoral district, political party
+count
+
+g9-c2 
+Elections in the German Reich - by religion of the voter
+group 9 - Elections in the German Reich
+index, name, date, state, electoral district, political party, religion
+count
+
+g9-c3
+Elections in the German Reich - by candidate
+group 9 - Elections in the German Reich
+index, name, date, state, electoral district, political party, candidate
+count
+
+g9-c4
+Elections in the German Reich - state wide
+group 9 - Elections in the German Reich
+index, date, state, political party, candidate
+count
+
+g9-c5
+Elections in the German Reich - state wide presidential election
+group 9 - Elections in the German Reich
+date, state, political party, candidate
+count
+
+g9-c6
+Elections in the German Reich - by political spectrum
+group 9 - Elections in the German Reich
+index, name, date, state, electoral district, political spectrum
+count
+
+g9-c7
+Elections in the German Reich - detailed
+group 9 - Elections in the German Reich
+index, name, date, state, electoral district, political spectrum, political party, candidate, election law
+count
+
+g9-c8
+Elections in the German Reich - detailed with validity
+group 9 - Elections in the German Reich
+index, name, date, state, electoral district, political spectrum, political party, candidate, election law, validity
+count
+
+g9-c9
+Elections in the German Reich - overview spectrum
+group 9 - Elections in the German Reich
+year, state, electoral district, political spectrum, validity
+count
+
+g9-c10
+Elections in the German Reich - overview
+group 9 - Elections in the German Reich
+year, state, political spectrum
+count
+
+g9-c11
+Elections in the German Reich - overview with validity
+group 9 - Elections in the German Reich
+year, state, political spectrum, validity
+count
+
+g10-c1
+Waterlevels of the rivers of the German Reich
+group 10 - Waterlevels of the rivers of the German Reich
+river, location, date
+count
+
+g10-c2
+Waterlevels of the rivers of the German Reich - with reference point
+group 10 - Waterlevels of the rivers of the German Reich
+river, location, date, sea level
+count
+
+g10-c3
+Waterlevels of the rivers of the German Reich - per month
+group 10 - Waterlevels of the rivers of the German Reich
+river, location, year, month
+count
+
+g10-c4
+Waterlevels of the rivers of the German Reich - min max per month
+group 10 - Waterlevels of the rivers of the German Reich
+river, location, year, month, water level
+count
+
+g10-c5
+Waterlevels of the rivers of the German Reich - min max
+group 10 - Waterlevels of the rivers of the German Reich
+river, location, date, water level
+count
+
+g10-c6
+Waterlevels of the rivers of the German Reich - January of 1880
+group 10 - Waterlevels of the rivers of the German Reich
+river, location, water level
+count
+
+g10-c7
+Waterlevels of the rivers of the German Reich - February of 1880
+group 10 - Waterlevels of the rivers of the German Reich
+river, location, water level
+count
+
+g10-c8
+Waterlevels of the rivers of the German Reich - March of 1880
+group 10 - Waterlevels of the rivers of the German Reich
+river, location
+count
