@@ -4,8 +4,10 @@ package de.uop.mics.bayerl.cube.eval.spark;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.ml.Pipeline;
+import org.apache.spark.ml.PipelineModel;
 import org.apache.spark.ml.PipelineStage;
 import org.apache.spark.ml.classification.LogisticRegression;
+import org.apache.spark.ml.classification.LogisticRegressionModel;
 import org.apache.spark.ml.evaluation.BinaryClassificationEvaluator;
 import org.apache.spark.ml.param.ParamMap;
 import org.apache.spark.ml.tuning.CrossValidator;
@@ -35,11 +37,11 @@ public class SparkML {
         DataFrame test = data.except(training);
 
 
-        LogisticRegression lr = new LogisticRegression()
-                .setMaxIter(10_000);
+        LogisticRegression lr = new LogisticRegression();
 
         ParamMap[] paramGrid = new ParamGridBuilder()
-                //.addGrid(lr.regParam(), new double[]{0.1, 0.01})
+                .addGrid(lr.maxIter(), new int[]{10, 100, 1_000, 10_000})
+                .addGrid(lr.regParam(), new double[]{0.0, 0.01, 0.1})
                 .build();
 
         Pipeline pipeline = new Pipeline()
@@ -49,19 +51,17 @@ public class SparkML {
                 .setEstimator(pipeline)
                 .setEvaluator(new BinaryClassificationEvaluator())
                 .setEstimatorParamMaps(paramGrid)
-                .setNumFolds(10); // Use 3+ in practice
+                .setNumFolds(3); // Use 3+ in practice
 
         CrossValidatorModel cvModel = cv.fit(training);
-
         DataFrame predictions = cvModel.transform(test);
-
         double evaluate = cvModel.getEvaluator().evaluate(predictions);
-
-        System.out.println(cvModel.bestModel().explainParams());
-        // TODO get best model and parameter set
-
+        
+        PipelineModel pipelineModel = (PipelineModel) cvModel.bestModel();
+        LogisticRegressionModel logisticRegressionModel = (LogisticRegressionModel) pipelineModel.stages()[0];
 
         System.out.println("###");
+        System.out.println(logisticRegressionModel.explainParams());
         System.out.println("###");
         System.out.println(evaluate);
         System.out.println("###");
