@@ -24,11 +24,12 @@ import scala.Tuple2;
 import java.io.Serializable;
 import java.util.List;
 
-public class SparkEvalGui extends Application implements Serializable{
+public class SparkEvalGui extends Application implements Serializable {
 
     private int numberOfInputs = 0;
     private int numbeofPositiveInputs = 0;
     private double trainingdata = 0.6;
+    private int numIterations =  25_000;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -73,10 +74,6 @@ public class SparkEvalGui extends Application implements Serializable{
         JavaRDD<LabeledPoint> test = data.subtract(training);
 
         // Train a Support Vector Machine (SVM) using Stochastic Gradient Descent
-        int numIterations = 25_000;
-
-        
-
         final SVMModel model = SVMWithSGD.train(training.rdd(), numIterations);
 
 

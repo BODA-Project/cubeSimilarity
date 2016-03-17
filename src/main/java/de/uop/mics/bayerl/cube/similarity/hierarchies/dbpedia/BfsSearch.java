@@ -16,6 +16,7 @@ public class BfsSearch {
     private boolean doCache = true;
     private Map<String, List<String>> cacheBroader;
     private Map<String, List<List<String>>> cachePage;
+    private Map<String, Integer> cacheDistance;
     private static BfsSearch instance;
 
     private final static String PAGE_LINK_PROPERTY = "<http://dbpedia.org/ontology/wikiPageWikiLink>";
@@ -25,6 +26,7 @@ public class BfsSearch {
     private BfsSearch() {
         cacheBroader = new HashMap<>();
         cachePage = new HashMap<>();
+        cacheDistance = new HashMap<>();
     }
 
     public static BfsSearch getInstance() {
@@ -437,7 +439,13 @@ public class BfsSearch {
     }
 
     public int getDistance(String c1, String c2, int maxDistance, EdgeMode edgeMode, DBPediaProperty dbPediaProperty) {
-        return findPath(c1, c2, maxDistance, edgeMode, dbPediaProperty).size() - 1;
+        String key = c1 + "<>" + c2;
+
+        if (!cacheDistance.containsKey(key)) {
+            cacheDistance.put(key, findPath(c1, c2, maxDistance, edgeMode, dbPediaProperty).size() - 1);
+        }
+
+        return cacheDistance.get(key);
     }
 
     public double getSimilarity(String c1, String c2, DBPediaProperty dbPediaProperty) {

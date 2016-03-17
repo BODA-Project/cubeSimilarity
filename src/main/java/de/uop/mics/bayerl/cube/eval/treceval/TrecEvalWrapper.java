@@ -1,4 +1,4 @@
-package de.uop.mics.bayerl.cube.eval;
+package de.uop.mics.bayerl.cube.eval.treceval;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -16,7 +16,6 @@ public class TrecEvalWrapper {
         String measures = " -m P.1,5,10,15 -m map -m recip_rank ";
         String groundTruth = " qrel.cube ";
         String folder = "eval";
-
 
         try {
             Files.list(Paths.get(folder)).forEach(f -> {

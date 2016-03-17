@@ -389,13 +389,13 @@ group7 - Childbirth in the German Reich
 year, month, region, gender
 count
 
-g7-c9
+g7-c10
 Childbirth in the German Reich - total difference in year 1881 compared to 1880
 group7 - Childbirth in the German Reich
 month, state, region, life, gender, legitimacy
 count
 
-g7-c10
+g7-c11
 Childbirth in the German Reich - differencein percentage in year 1881 compared to 1880
 group7 - Childbirth in the German Reich
 month, state, region, life, gender, legitimacy

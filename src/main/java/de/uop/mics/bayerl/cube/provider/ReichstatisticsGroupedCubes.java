@@ -34,20 +34,20 @@ public class ReichstatisticsGroupedCubes {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        //System.out.println(CONCEPTS.size());
-
     }
 
     public static void main(String[] args) {
         List<Cube> cubes = loadCubes();
-
         System.out.println(cubes.size());
 
+        Set<String> ids = new HashSet<>();
         for (Cube cube : cubes) {
-            System.out.println(cube.getStructureDefinition().getMeasures().size());
+            ids.add(cube.getId());
         }
 
+        if (cubes.size() != ids.size()) {
+            System.out.println("ERROR ids are not unique");
+        }
     }
 
 
@@ -64,6 +64,7 @@ public class ReichstatisticsGroupedCubes {
         int i = 0;
         Cube cube = null;
         for (String line : lines) {
+            line = line.trim();
             if (line.equals("")) {
                 cube = new Cube();
                 cubes.add(cube);
@@ -110,7 +111,6 @@ public class ReichstatisticsGroupedCubes {
 
             i++;
         }
-
 
         errorSet.forEach(System.out::println);
 

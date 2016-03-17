@@ -36,9 +36,6 @@ public class SparkPrepare {
             e.printStackTrace();
         }
 
-
-
-
         long featureSize = 0;
         try {
             featureSize = Files.list(Paths.get(INPUT)).count();
@@ -54,16 +51,21 @@ public class SparkPrepare {
         final int[] currentFeature = {0};
         try {
             Files.list(Paths.get(INPUT)).forEach(file -> {
+                System.out.println("FILE: " + file.getFileName());
                 Map<String, Double> feature = new HashMap<>();
                 features.put(currentFeature[0], feature);
                 currentFeature[0]++;
 
                 try {
                     Files.lines(file).forEach(line -> {
-                        String[] splits = line.split(" ");
-                        String id = splits[0] + "#" + splits[2];
-                        availableIds.add(id);
-                        feature.put(id, Double.parseDouble(splits[4]));
+                        if (!line.equals("")) {
+                            String[] splits = line.split(" ");
+                            String id = splits[0] + "#" + splits[2];
+                            availableIds.add(id);
+                            feature.put(id, Double.parseDouble(splits[4]));
+                        } else {
+                            System.out.println("empty line");
+                        }
                     });
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -100,7 +102,6 @@ public class SparkPrepare {
             }
             lines.add(sb.toString());
         });
-
 
         try {
             Files.write(Paths.get(TARGET), lines, Charset.forName("UTF-8"), StandardOpenOption.WRITE);

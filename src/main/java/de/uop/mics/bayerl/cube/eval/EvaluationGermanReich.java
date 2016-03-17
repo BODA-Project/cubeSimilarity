@@ -15,7 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -31,52 +30,10 @@ public class EvaluationGermanReich {
 
 
     public static void main(String[] args) {
-
         Stopwatch stopwatch = Stopwatch.createStarted();
         evaluate2();
         System.out.println(stopwatch.elapsed(TimeUnit.SECONDS) + "[s]");
-
-       // sample();
     }
-
-
-    private final static void print() {
-
-        String id = "g1-c8";
-
-        List<Cube> cubes = ReichstatisticsGroupedCubes.loadCubes();
-
-        for (Cube cube : cubes) {
-            if (cube.getId().equals(id)) {
-                printCube(cube);
-
-                break;
-            }
-
-        }
-
-    }
-
-    private final static void printCube(Cube cube) {
-        String prefix = "http://dbpedia.org/resource/";
-        //System.out.println(cube.getId() + "  " + cube.getSparqlEndpoint().getEndpoint());
-
-        System.out.println(cube.getId() + "   " + cube.getDescription() + "    " + cube.getLabel());
-
-        for (Dimension dimension : cube.getStructureDefinition().getDimensions()) {
-           // System.out.println(dimension.getConcept() + "   " + dimension.getLabel());
-            System.out.print(", " + dimension.getLabel());
-
-        }
-        System.out.println();
-        for (Measure measure : cube.getStructureDefinition().getMeasures()) {
-            //System.out.println(measure.getConcept() + "   " + measure.getLabel());
-            System.out.print(", " + measure.getLabel());
-
-        }
-    }
-
-
 
     private static void evaluate2() {
         List<Cube> cubes = ReichstatisticsGroupedCubes.loadCubes();
@@ -88,49 +45,29 @@ public class EvaluationGermanReich {
 //        queries.add(cubes.get(3));
 //        queries.add(cubes.get(4));
 
-
-
         // use all cubes as queries
         List<Cube> queries = cubes;
 
         List<Metric> metrics = new ArrayList<>();
-//        metrics.add(Metric.CONCEPT_EQUALITY);
-//        metrics.add(Metric.LABEL_SIMILARITY);
+        metrics.add(Metric.CONCEPT_EQUALITY);
+        metrics.add(Metric.LABEL_SIMILARITY);
         metrics.add(Metric.DBPEDIA_CATEGORY);
-//        metrics.add(Metric.DBPEDIA_ENTITY);
-//        metrics.add(Metric.WORD_2_VEC);
-
-
-
+        metrics.add(Metric.DBPEDIA_ENTITY);
+        metrics.add(Metric.WORD_2_VEC);
 
         for (Metric metric : metrics) {
-
             for (MatrixAggregation matrixAggregation : MatrixAggregation.values()) {
-//            Arrays.stream(MatrixAggregation.values()).parallel().forEach(matrixAggregation -> {
                 for (Cube query : queries) {
-
                     System.out.println(query.getLabel());
                     List<RankingItem> ranking = Evaluation.getInstance().getRanking(query, cubes, metric, matrixAggregation);
-
-
-                    // sort ranking
-//                    ranking.sort((r1, r2) -> Double.compare(r1.getSimilarityMatrix().getSimilarity(), r2.getSimilarityMatrix().getSimilarity()));
-//                    Collections.reverse(ranking);
-//                    ranking.remove(0);
-
-
                     // filter self comparison
                     ranking.stream().filter(item -> !item.getSourceId().equals(item.getTargetId()));
-
-
-
                     List<String> lines = new ArrayList<>();
                     int i = 0;
                     for (RankingItem rankingItem : ranking) {
                         i++;
                         String line = query.getId() + " 0 " + rankingItem.getTargetId() + " " + i + " " + rankingItem.getSimilarityMatrix().getSimilarity() + " exp";
                         lines.add(line);
-                        //System.out.println(line);
                     }
 
                     String file = FOLDER + metric.name().toLowerCase() + "___" + matrixAggregation.name().toLowerCase() + "_" + FILE;
@@ -148,17 +85,44 @@ public class EvaluationGermanReich {
                         e.printStackTrace();
                     }
                 }
-//            });
             }
+        }
+    }
+
+    private final static void print() {
+        String id = "g1-c8";
+        List<Cube> cubes = ReichstatisticsGroupedCubes.loadCubes();
+
+        for (Cube cube : cubes) {
+            if (cube.getId().equals(id)) {
+                printCube(cube);
+                break;
+            }
+        }
+    }
+
+    private final static void printCube(Cube cube) {
+        String prefix = "http://dbpedia.org/resource/";
+        //System.out.println(cube.getId() + "  " + cube.getSparqlEndpoint().getEndpoint());
+
+        System.out.println(cube.getId() + "   " + cube.getDescription() + "    " + cube.getLabel());
+
+        for (Dimension dimension : cube.getStructureDefinition().getDimensions()) {
+            // System.out.println(dimension.getConcept() + "   " + dimension.getLabel());
+            System.out.print(", " + dimension.getLabel());
+
+        }
+        System.out.println();
+        for (Measure measure : cube.getStructureDefinition().getMeasures()) {
+            //System.out.println(measure.getConcept() + "   " + measure.getLabel());
+            System.out.print(", " + measure.getLabel());
 
         }
     }
 
 
     private static void sample() {
-
         String id = "g1-c4";
-
         List<Cube> cubes = ReichstatisticsGroupedCubes.loadCubes();
         Cube query = null;
         for (Cube cube : cubes) {
@@ -168,7 +132,6 @@ public class EvaluationGermanReich {
             }
 
         }
-
 
         List<RankingItem> ranking = Evaluation.getInstance().getRanking(query, cubes, Metric.LABEL_SIMILARITY, MatrixAggregation.HUNGARIAN_ALGORITHM);
         // sort ranking
@@ -187,16 +150,10 @@ public class EvaluationGermanReich {
 
             }
 
-
-
             double sim = (int)(rankingItem.getSimilarityMatrix().getSimilarity() * 100) / 100d;
             System.out.println(rankingItem.getTargetId() + "   " + sim + "   " + target.getLabel());
         }
-
-
     }
-
-
 
 
     private static void evaluate() {
