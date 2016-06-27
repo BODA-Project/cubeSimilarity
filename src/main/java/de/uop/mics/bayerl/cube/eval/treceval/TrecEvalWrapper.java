@@ -19,7 +19,7 @@ public class TrecEvalWrapper {
 
         try {
             Files.list(Paths.get(folder)).forEach(f -> {
-                System.out.print(f.getFileName().toString().replace("_output.txt", "").replaceAll("_", "-"));
+                System.out.print(f.getFileName().toString().replace("_output.txt", "").replaceAll("_", "-").replace("---", " & "));
                 String run = trecEval + measures + groundTruth + f;
 
                 Process tr = null;

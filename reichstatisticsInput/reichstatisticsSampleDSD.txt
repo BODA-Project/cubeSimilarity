@@ -269,6 +269,18 @@ group 4 - production of goods
 goods and services, market, year, month, week, region
 count tons
 
+g4-c9
+production: goods per city overview 1885
+group 4 - production of goods
+goods_and_services, country, region, city
+count value
+
+g4-c10
+production: goods per city overview 1885
+group 4 - production of goods
+goods and services, country, region, town
+count value
+
 g5-c1
 indurstrial units: employee statistics
 group 5 - indurstrial units
@@ -401,6 +413,12 @@ group7 - Childbirth in the German Reich
 month, state, region, life, gender, legitimacy
 percentage
 
+g7-c12
+Childbirth in the German Reich - differencein percentage in year 1881 compared to 1880
+group7 - Childbirth in the German Reich
+month, state, region, life, sex, legitimacy
+percentage
+
 g8-c1
 Naval accidents at the german coast - overview
 group 8 - Naval accidents at the german coast
@@ -458,7 +476,7 @@ count
 g8-c10
 Naval accidents at the german coast - tonnage
 group 8 - Naval accidents at the german coast
-year, location, shipwrecking, watercraft, tonnage
+year, location, wrecking, watercraft, tonnage
 count
 
 g8-c11
@@ -489,6 +507,18 @@ g8-c15
 Naval accidents at the german coast - crew casualties
 group 8 - Naval accidents at the german coast
 date, location, coast, shipwrecking, watercraft, name, assurance, age, nationality, tonnage
+count
+
+g8-c16
+Naval accidents at the german coast - in the year 1881
+group 8 - Naval accidents at the german coast
+location, wrecking, watercraft
+count
+
+g8-c17
+Naval accidents at the german coast - year overview
+group 8 - Naval accidents at the german coast
+year, location, accident, watercraft
 count
 
 g9-c1 
@@ -557,6 +587,18 @@ group 9 - Elections in the German Reich
 year, state, political spectrum, validity
 count
 
+g9-c12
+Elections in the German Reich - overview with validity
+group 9 - Elections in the German Reich
+year, state, political spectrum, validty
+count
+
+g9-c13
+Elections in the German Reich - by political spectrum
+group 9 - Elections in the German Reich
+index, name, date, state, electoral district, politicalspectrum
+count
+
 g10-c1
 Waterlevels of the rivers of the German Reich
 group 10 - Waterlevels of the rivers of the German Reich
@@ -603,4 +645,16 @@ g10-c8
 Waterlevels of the rivers of the German Reich - March of 1880
 group 10 - Waterlevels of the rivers of the German Reich
 river, location
+count
+
+g10-c9
+Waterlevels of the rivers of the German Reich - with reference point
+group 10 - Waterlevels of the rivers of the German Reich
+rivar, location, date, sea level
+count
+
+g10-c10
+Waterlevels of the rivers of the German Reich - with reference point
+group 10 - Waterlevels of the rivers of the German Reich
+river, location, date, sea_level
 count

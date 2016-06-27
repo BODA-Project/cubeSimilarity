@@ -34,6 +34,13 @@ public class ReichstatisticsGroupedCubes {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        System.out.println(CONCEPTS.size());
+        
+        
+        Set<String> cs = new HashSet<>();
+        cs.addAll(CONCEPTS.values());
+        System.out.println(cs.size());
     }
 
     public static void main(String[] args) {

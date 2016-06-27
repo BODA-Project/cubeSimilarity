@@ -32,6 +32,7 @@ public class EvaluationGermanReich {
     public static void main(String[] args) {
         Stopwatch stopwatch = Stopwatch.createStarted();
         evaluate2();
+//        sample();
         System.out.println(stopwatch.elapsed(TimeUnit.SECONDS) + "[s]");
     }
 
@@ -49,11 +50,12 @@ public class EvaluationGermanReich {
         List<Cube> queries = cubes;
 
         List<Metric> metrics = new ArrayList<>();
-        metrics.add(Metric.CONCEPT_EQUALITY);
-        metrics.add(Metric.LABEL_SIMILARITY);
-        metrics.add(Metric.DBPEDIA_CATEGORY);
-        metrics.add(Metric.DBPEDIA_ENTITY);
-        metrics.add(Metric.WORD_2_VEC);
+//        metrics.add(Metric.CONCEPT_EQUALITY);
+//        metrics.add(Metric.LABEL_SIMILARITY);
+//        metrics.add(Metric.DBPEDIA_CATEGORY);
+//        metrics.add(Metric.DBPEDIA_ENTITY);
+//        metrics.add(Metric.WORD_2_VEC);
+        metrics.add(Metric.COMBINED);
 
         for (Metric metric : metrics) {
             for (MatrixAggregation matrixAggregation : MatrixAggregation.values()) {
@@ -133,7 +135,7 @@ public class EvaluationGermanReich {
 
         }
 
-        List<RankingItem> ranking = Evaluation.getInstance().getRanking(query, cubes, Metric.LABEL_SIMILARITY, MatrixAggregation.HUNGARIAN_ALGORITHM);
+        List<RankingItem> ranking = Evaluation.getInstance().getRanking(query, cubes, Metric.WORD_2_VEC, MatrixAggregation.HUNGARIAN_ALGORITHM);
         // sort ranking
         ranking.sort((r1, r2) -> Double.compare(r1.getSimilarityMatrix().getSimilarity(), r2.getSimilarityMatrix().getSimilarity()));
         Collections.reverse(ranking);
@@ -151,7 +153,7 @@ public class EvaluationGermanReich {
             }
 
             double sim = (int)(rankingItem.getSimilarityMatrix().getSimilarity() * 100) / 100d;
-            System.out.println(rankingItem.getTargetId() + "   " + sim + "   " + target.getLabel());
+            System.out.println(rankingItem.getTargetId() + " & " + sim + " & " + target.getLabel() + " \\\\");
         }
     }
 

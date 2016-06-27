@@ -4,10 +4,13 @@ country , Country
 flag , Flag
 education, Education
 gender, Gender
+sex, Gender
 year, Year
 city, City
+town, City
 homeland, Homeland
 goods and services, Goods_and_services
+goods_and_services, Goods_and_services
 origin , Paleoanthropology
 destination, Travel
 family status, Marital_status
@@ -53,13 +56,19 @@ assurance, Assurance_services
 coast, Coast
 candidate, Candidate
 political spectrum, Political_spectrum
+politicalspectrum, Political_spectrum
 tonnage, Tonnage
 legitimacy, Legitimacy_(family_law)
 name, Name
 location, Location_(geography)
 shipwrecking, Shipwrecking
+wrecking, Shipwrecking
+accident, Shipwrecking
 election law, Election_law
 validity, Validity
+validty, Validity
 river, River
+rivar, River
 sea level, Sea_level
+sea_level, Sea_level
 percentage, Percentage

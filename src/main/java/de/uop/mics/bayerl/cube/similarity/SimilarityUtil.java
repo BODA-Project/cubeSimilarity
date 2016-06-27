@@ -1,5 +1,6 @@
 package de.uop.mics.bayerl.cube.similarity;
 
+import de.uop.mics.bayerl.cube.similarity.combined.CombinedSimilarity;
 import de.uop.mics.bayerl.cube.similarity.hierarchies.dbpedia.DBPediaProperty;
 import de.uop.mics.bayerl.cube.similarity.matrix.*;
 import de.uop.mics.bayerl.cube.similarity.string.DistanceAlgorithm;
@@ -26,6 +27,8 @@ public class SimilarityUtil {
             computeComponentSimilarity = new BfsSimilarity(DBPediaProperty.PAGE_LINK);
         } else if (m == Metric.WORD_2_VEC) {
             computeComponentSimilarity = new Word2Vec();
+        } else if (m == Metric.COMBINED) {
+            computeComponentSimilarity = new CombinedSimilarity();
         }
 
         return computeComponentSimilarity;

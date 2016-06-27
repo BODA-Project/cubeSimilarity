@@ -11,7 +11,8 @@ public enum Metric {
     CONCEPT_EQUALITY_SAMEAS,
     DBPEDIA_CATEGORY,
     DBPEDIA_ENTITY,
-    WORD_2_VEC
+    WORD_2_VEC,
+    COMBINED
 
 
 }

@@ -1,0 +1,6 @@
+./sofia-ml --learner_type pegasos --loop_type rank --lambda 0.1 --iterations 100000 --dimensionality 20 --training_file data/input-sofia.txt --model_out data/model
+
+
+./sofia-ml --model_in data/model --test_file data/input-sofia.txt --results_file data/results.txt
+
+perl eval.pl data/results.txt
