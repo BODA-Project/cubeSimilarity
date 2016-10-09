@@ -1,5 +1,6 @@
 package de.uop.mics.bayerl.cube.provider.datahub;
 
+import com.google.common.base.CaseFormat;
 import de.uop.mics.bayerl.cube.model.Cube;
 import de.uop.mics.bayerl.cube.model.Dimension;
 import de.uop.mics.bayerl.cube.model.Measure;
@@ -14,6 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -43,29 +45,30 @@ public class DatahubCubes {
             " }";
 
     private final static String GET_DSD = " SELECT * WHERE { ?dsd a <http://purl.org/linked-data/cube#DataStructureDefinition> }";
-    private static final String CUBE_FILE = "datahub.cubes";
+    private static final String FOLDER = "crawl/";
+    private static final String CUBE_FILE = FOLDER + "datahub.cubes";
 
 
     public static void main(String[] args) {
 
-//        getAllCubes();
+        getAllCubes();
 
-        List<Cube> cubes = readCubes();
-        System.out.println(cubes.size());
-
-        for (Cube cube : cubes) {
-            if (!cube.getSparqlEndpoint().getName().equals("the-eurostat-linked-data")) {
-                System.out.println(cube.getStructureDefinition().getDimensions().size());
-
-                System.out.println(cube.getStructureDefinition().getConcept());
-                for (Dimension dimension : cube.getStructureDefinition().getDimensions()) {
-                    System.out.println("   " + dimension.getConcept() + "   " + dimension.getLabel());
-                }
-                System.out.println(cube.getStructureDefinition().getMeasures().size());
-                System.out.println("---");
-            }
-
-        }
+//        List<Cube> cubes = readCubes();
+//        System.out.println(cubes.size());
+//
+//        for (Cube cube : cubes) {
+//            if (!cube.getSparqlEndpoint().getName().equals("the-eurostat-linked-data")) {
+//                System.out.println(cube.getStructureDefinition().getDimensions().size());
+//
+//                System.out.println(cube.getStructureDefinition().getConcept());
+//                for (Dimension dimension : cube.getStructureDefinition().getDimensions()) {
+//                    System.out.println("   " + dimension.getConcept() + "   " + dimension.getLabel());
+//                }
+//                System.out.println(cube.getStructureDefinition().getMeasures().size());
+//                System.out.println("---");
+//            }
+//
+//        }
 
     }
 
@@ -211,7 +214,7 @@ public class DatahubCubes {
         while (results.hasNext()) {
             QuerySolution r = results.next();
 
-            if (r.get("dsd") != null && r.get("dsd").isResource()) {
+            if (r.get("dsd") != null && r.get("dsd").isResource() && r.getResource("dsd").getURI() != null) {
                 nrOfCubes++;
                 Cube cube = new Cube();
                 cube.setId(UUID.randomUUID().toString());
@@ -221,7 +224,7 @@ public class DatahubCubes {
             }
         }
 
-        System.out.println(endpoint.getId() + "  /  " + endpoint.getTitle() + "   /   " + endpoint.getEndpoint() + "   /    " + endpoint.getName() + "   " + nrOfCubes);
+        System.out.println(endpoint.getId() + "  /  " + endpoint.getTitle() + "   /   " + endpoint.getEndpoint() + "   /    " + endpoint.getName() + "   /   " + nrOfCubes);
 
         // get dimensions
         for (Cube cube : cubes) {
@@ -356,30 +359,5 @@ public class DatahubCubes {
 //
 //
 //
-//    private static String getLabelFromUrl(String concept) {
-//
-//        // get substring
-//        int index = concept.lastIndexOf("#");
-//
-//        if (index == -1) {
-//            index = concept.lastIndexOf("/");
-//        }
-//
-//        String label = concept.substring(index + 1);
-//
-//        // remove unwanted characters
-////        label = label.replaceAll("-", " ");
-////        label = label.replaceAll("_", " ");
-//
-//        try {
-//            label = URLDecoder.decode(label, "UTF-8");
-//        } catch (UnsupportedEncodingException e) {
-//            e.printStackTrace();
-//        }
-//
-//        label = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_HYPHEN, label);
-//        label = label.replaceAll("-", " ");
-//
-//        return label;
-//    }
+
 }

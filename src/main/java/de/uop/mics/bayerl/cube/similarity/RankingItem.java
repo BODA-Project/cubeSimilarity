@@ -10,6 +10,7 @@ public class RankingItem {
     private String sourceId;
     private String targetId;
     private String metric;
+    private String aggregation;
     private SimilarityMatrix similarityMatrix;
 
     public String getSourceId() {
@@ -42,5 +43,13 @@ public class RankingItem {
 
     public void setSimilarityMatrix(SimilarityMatrix similarityMatrix) {
         this.similarityMatrix = similarityMatrix;
+    }
+
+    public String getAggregation() {
+        return aggregation;
+    }
+
+    public void setAggregation(String aggregation) {
+        this.aggregation = aggregation;
     }
 }

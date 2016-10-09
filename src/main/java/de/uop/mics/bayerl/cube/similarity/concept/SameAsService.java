@@ -30,7 +30,7 @@ public class SameAsService {
         return sameAsService;
     }
 
-    private final static String SERVICE = "http://zaire.dimis.fim.uni-passau.de:8080/balloon/sameas";
+    private final static String SERVICE = "post";
     private Map<String, Set<String>> cache = new HashMap<>();
     private boolean useCache = Configuration.CACHE_SAME_AS;
 
@@ -39,7 +39,13 @@ public class SameAsService {
             return true;
         }
 
-        return getCluster(c1).contains(c2);
+        boolean hit = getCluster(c1).contains(c2);
+        
+        if (hit) {
+            System.out.println("SAME AS HIT HOORAY");
+        }
+
+        return hit;
     }
 
     public double getSimilarity(String c1, String c2) {
@@ -69,6 +75,10 @@ public class SameAsService {
         } else {
             cluster = requestCluster(c);
             cache.put(c, cluster);
+        }
+        
+        if (cluster.size() > 0) {
+            System.out.println("cluster found");
         }
 
         return cluster;

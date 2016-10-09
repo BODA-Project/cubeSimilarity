@@ -31,11 +31,13 @@ public class Datahub {
     private static final String DATAHUB_API = "http://datahub.io/api/3/action/";
     private static final String GET_PACKAGES = "package_list";
     private static final String GET_DATASET = "package_show?id=";
+    
+    private static final String FOLDER = "crawl/";
 
-    private static final String FILE_ALL_DATASETS = "0-all-datasets.txt";
-    private static final String FILE_DATASET_WITH_SPARQL = "1-dataset-sparql.txt";
-    private static final String FILE_ENDPOINTS_WITH_CUBE = "2-endpoints-cubes.txt";
-    public static final String FILE_ENDPOINTS_WITH_CUBE_CLEANED = "3-endpoints-cubes-cleaned.txt";
+    private static final String FILE_ALL_DATASETS = FOLDER + "0-all-datasets.txt";
+    private static final String FILE_DATASET_WITH_SPARQL = FOLDER + "1-dataset-sparql.txt";
+    private static final String FILE_ENDPOINTS_WITH_CUBE = FOLDER + "2-endpoints-cubes.txt";
+    public static final String FILE_ENDPOINTS_WITH_CUBE_CLEANED = FOLDER + "3-endpoints-cubes-cleaned.txt";
 
     public final static String GET_DSD = " SELECT * WHERE { ?dsd a <http://purl.org/linked-data/cube#DataStructureDefinition> }";
 
@@ -153,8 +155,7 @@ public class Datahub {
         String fileOut = FILE_DATASET_WITH_SPARQL;
 
         saveCreateFile(fileOut);
-
-
+        
         try {
 
             System.out.println("with sparql endpoint: " + Files.lines(Paths.get(fileIn)).filter(s -> s.contains("\"format\": \"api/sparql\"")).count());
@@ -230,7 +231,7 @@ public class Datahub {
      *
      * @param file The name of the file to create.
      */
-    private static void saveCreateFile(String file) {
+    public static void saveCreateFile(String file) {
         // reset file
         try {
             Files.delete(Paths.get(file));

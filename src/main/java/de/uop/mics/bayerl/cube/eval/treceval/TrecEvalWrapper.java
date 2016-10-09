@@ -34,10 +34,10 @@ public class TrecEvalWrapper {
 
                 rd.lines().forEach(s -> {
                     String[] splits = s.split("all");
-                    System.out.print(" & " + splits[1].trim()); // splits[0].trim() +
+                    System.out.print(" \t " + splits[1].trim()); // splits[0].trim() +
                 });
 
-                System.out.print(" \\\\");
+//                System.out.print(" \\\\");
                 System.out.println();
 
                 error.lines().forEach(s -> {

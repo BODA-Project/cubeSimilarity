@@ -27,13 +27,17 @@ public class ValidStructure {
         }
 
         // check if there is a label, description and structure definition
-        if (cube.getLabel() == null || cube.getLabel().isEmpty()) {
-            LOG.warn(cube.getId() + ": No label found");
-            valid = false;
-        } else if (cube.getDescription() == null || cube.getDescription().isEmpty()) {
-            LOG.warn(cube.getId() + ": No description found");
-            valid = false;
-        } else if (cube.getStructureDefinition() == null) {
+//        if (cube.getLabel() == null || cube.getLabel().isEmpty()) {
+//            LOG.warn(cube.getId() + ": No label found");
+//            valid = false;
+//        } else 
+            
+//            if (cube.getDescription() == null || cube.getDescription().isEmpty()) {
+//            LOG.warn(cube.getId() + ": No description found");
+//            valid = false;
+//        } else 
+//            
+            if (cube.getStructureDefinition() == null) {
             LOG.warn(cube.getId() + ": No structure definition found");
             valid = false;
         }
@@ -47,7 +51,32 @@ public class ValidStructure {
             }
         }
 
-        // check if the components have labels and urls
+        // check if there are measures
+        if (valid) {
+            StructureDefinition sd = cube.getStructureDefinition();
+            if (sd.getMeasures() == null || sd.getMeasures().size() == 0) {
+                LOG.warn(cube.getId() + ": No measures found");
+                valid = false;
+            }
+        }
+
+//        // check if the components have labels
+//        if (valid) {
+//            StructureDefinition sd = cube.getStructureDefinition();
+//            Set<Component> components = new HashSet<>();
+//            components.addAll(sd.getDimensions());
+//            components.addAll(sd.getMeasures());
+//
+//            for (Component c : components) {
+//                if (c.getLabel() == null || c.getLabel().isEmpty()) {
+//                    valid = false;
+//                    LOG.warn(cube.getId() + ": Component label not found");
+//                    break;
+//                }
+//            }
+//        }
+
+        // check if the components have concepts
         if (valid) {
             StructureDefinition sd = cube.getStructureDefinition();
             Set<Component> components = new HashSet<>();
@@ -55,10 +84,9 @@ public class ValidStructure {
             components.addAll(sd.getMeasures());
 
             for (Component c : components) {
-                if (c.getLabel() == null || c.getLabel().isEmpty()
-                        || c.getConcept() == null || c.getConcept().isEmpty()) {
+                if (c.getConcept() == null || c.getConcept().isEmpty()) {
                     valid = false;
-                    LOG.warn(cube.getId() + ": Component label/url not found");
+                    LOG.warn(cube.getId() + ": Component url not found");
                     break;
                 }
             }
